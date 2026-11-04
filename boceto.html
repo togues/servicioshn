@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Boceto · Plataforma Espacial HN</title>
+<style>
+body{margin:0;font:14px/1.4 "Segoe UI",system-ui,sans-serif;color:#222;background:#eef1f3;padding:16px}
+h1{font-size:1.1rem;margin:0 0 4px}.sub{color:#666;margin:0 0 16px;font-size:.9rem}
+.pant{background:#fff;border:1px solid #cfd6da;border-radius:8px;margin:0 0 22px;overflow:hidden;max-width:960px}
+.pant h2{margin:0;padding:8px 12px;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;background:#185c7d;color:#fff}
+.pant h2 span{font-weight:400;opacity:.8;text-transform:none;letter-spacing:0;margin-left:8px}
+.lienzo{padding:12px;display:grid;gap:8px}
+.caja{background:#e6e9eb;border:1px dashed #9aa5ab;border-radius:6px;padding:10px;color:#444;min-height:30px}
+.caja b{display:block;color:#111;font-size:.85rem}.caja small{color:#666}
+.ac{background:#185c7d;color:#fff;border:0}.ac b{color:#fff}
+.fila{display:grid;gap:8px}.c2{grid-template-columns:1fr 1fr}.c3{grid-template-columns:repeat(3,1fr)}.c4{grid-template-columns:repeat(4,1fr)}
+.mapa{background:repeating-linear-gradient(45deg,#dfe5e8,#dfe5e8 8px,#e9edf0 8px,#e9edf0 16px);min-height:220px;display:grid;place-items:center;color:#555}
+.nota{font-size:.82rem;color:#555;padding:0 12px 12px;margin:0}
+.paso{display:flex;gap:8px;align-items:flex-start}.paso i{flex:none;width:22px;height:22px;border-radius:50%;background:#f2a516;color:#111;display:grid;place-items:center;font-style:normal;font-weight:700;font-size:.8rem}
+@media(max-width:640px){.c3,.c4{grid-template-columns:1fr 1fr}.c2{grid-template-columns:1fr}}
+</style></head><body>
+<h1>Boceto · Plataforma de servicios Espacial HN</h1>
+<p class="sub">Cajas grises = zonas; sin diseño todavía. Un solo sitio con cinco pantallas; el visitante no sabe de SIG.</p>
+
+<div class="pant"><h2>1 · Portada <span>«qué es esto», despacio</span></h2>
+<div class="lienzo">
+  <div class="fila c2"><div class="caja"><b>Logo Espacial HN</b><small>marca</small></div><div class="caja" style="text-align:right"><b>Servicios · Cómo funciona · Analizar un área</b><small>navegación; idioma</small></div></div>
+  <div class="caja" style="min-height:110px"><b>Titular en llano</b><small>«Lo que el satélite sabe de su terreno, con fecha y fuente.» Una frase de apoyo. Botón: <u>Analizar un área</u>. Botón secundario: <u>Ver los servicios</u></small></div>
+  <div class="fila c3"><div class="caja"><b>Dibuje</b><small>1. Marque el área en el mapa</small></div><div class="caja"><b>Elija</b><small>2. Qué quiere saber</small></div><div class="caja"><b>Lea</b><small>3. Evidencia con fecha y fuente, en lenguaje común</small></div></div>
+  <div class="caja" style="min-height:70px"><b>Para quién</b><small>Alcaldías · Ciudadanos y sus abogados · Bancos y aseguradoras · Agricultores. Una línea por cada uno: qué se llevan.</small></div>
+  <div class="caja"><b>Qué entregamos y qué no</b><small>Evidencia observada, nunca veredicto. Datos abiertos (Copernicus, NASA, Google). No sustituye un peritaje. Esto genera confianza en Europa.</small></div>
+  <div class="caja"><b>Pie</b><small>Espacial HN · Tegucigalpa · contacto · países · aviso de privacidad</small></div>
+</div></div>
+
+<div class="pant"><h2>2 · Servicios <span>las 9 tarjetas, como catálogo</span></h2>
+<div class="lienzo">
+  <div class="caja"><b>Título</b><small>«Nueve preguntas que respondemos sobre cualquier área». Filtro: Para alcaldías / Para ciudadanos / Para campo.</small></div>
+  <div class="fila c3">
+    <div class="caja"><b>Riesgo</b><small>¿Se ha inundado, quemado, deslizado?</small></div>
+    <div class="caja"><b>Historial del predio</b><small>¿Desde cuándo se ve construcción?</small></div>
+    <div class="caja"><b>Construcción y entorno</b><small>Edificios, niveles, acceso</small></div>
+    <div class="caja"><b>Suelo y relieve</b><small>Pendiente, textura, drenaje</small></div>
+    <div class="caja"><b>Clima y agua</b><small>Lluvia, sequía, calor</small></div>
+    <div class="caja"><b>Cobertura e historial</b><small>Qué hubo año por año</small></div>
+    <div class="caja"><b>Aptitud agrícola</b><small>Preliminar</small></div>
+    <div class="caja"><b>Normativa</b><small>Quebradas, retiros, áreas protegidas</small></div>
+    <div class="caja"><b>Identificación</b><small>Área, forma, coherencia del dibujo</small></div>
+  </div>
+  <p class="nota" style="padding:0">Cada tarjeta: icono, pregunta en llano, dos líneas, «Ver ficha» y «Analizar con esto».</p>
+</div></div>
+
+<div class="pant"><h2>3 · Ficha de un servicio <span>qué entrega, con ejemplo real</span></h2>
+<div class="lienzo">
+  <div class="fila c2">
+    <div class="caja" style="min-height:150px"><b>Pregunta que responde</b><small>Para qué sirve · Casos de uso («si quiere saber X, use esto») · Qué recibe: mapa, texto, gráfica, PDF</small></div>
+    <div class="caja mapa"><b>Ejemplo real</b><small>captura de un resultado + miniatura</small></div>
+  </div>
+  <div class="fila c2"><div class="caja"><b>Fuentes y fechas</b><small>Sentinel-2 10 m desde 2017, Open Buildings 2016–2023…</small></div><div class="caja"><b>Límites</b><small>lo que NO dice, en llano</small></div></div>
+  <div class="caja ac"><b>Analizar un área con este servicio →</b></div>
+</div></div>
+
+<div class="pant"><h2>4 · Analizar <span>herramienta guiada, paso a paso</span></h2>
+<div class="lienzo">
+  <div class="fila" style="grid-template-columns:minmax(0,1.4fr) minmax(0,1fr)">
+    <div class="caja mapa"><div><b>Mapa (satélite)</b><small>buscador de lugar · dibujar polígono · deshacer · borrar</small></div></div>
+    <div class="lienzo" style="padding:0">
+      <div class="caja"><div class="paso"><i>1</i><div><b>Marque el área</b><small>«Toque en el mapa las esquinas de su terreno. Mínimo 50 m². Si el dibujo se cruza, le avisamos y lo corrige.»</small></div></div></div>
+      <div class="caja"><div class="paso"><i>2</i><div><b>¿Qué quiere saber?</b><small>casillas de las 9 tarjetas, con costo orientativo si aplica</small></div></div></div>
+      <div class="caja"><div class="paso"><i>3</i><div><b>Analizar</b><small>botón grande; mientras corre: barra por servicio («Riesgo: listo · Historial: 40 s…»), nunca una pantalla muerta</small></div></div></div>
+      <div class="caja"><b>Estado del dibujo</b><small>Área: 1.240 m² (1.775 varas²) · Válido ✓ / «Un lado se cruza: mueva el punto rojo»</small></div>
+    </div>
+  </div>
+  <p class="nota" style="padding:0">En celular: mapa arriba a pantalla completa, los pasos como hoja inferior deslizable (igual que la mesa de trabajo del geoportal).</p>
+</div></div>
+
+<div class="pant"><h2>5 · Resultado <span>el informe, traducido al lenguaje común</span></h2>
+<div class="lienzo">
+  <div class="caja"><b>Cabecera</b><small>«Área de 1.240 m² en Tatumbla · analizada el 3 nov 2026 · 5 servicios» · botones: Guardar PDF · Nuevo análisis · Compartir enlace</small></div>
+  <div class="fila" style="grid-template-columns:minmax(0,1.4fr) minmax(0,1fr)">
+    <div class="caja mapa"><div><b>Mapa con capas por servicio</b><small>techos por año · parches de cambio · agua · leyenda clara</small></div></div>
+    <div class="lienzo" style="padding:0">
+      <div class="caja"><b>Lo esencial, en 5 frases</b><small>una por servicio, en llano: «Entre 2018 y 2021 aparece la mayor parte del techo…»</small></div>
+      <div class="caja"><b>Secciones por servicio (acordeón)</b><small>frase · gráfica · galería de imágenes por año · «qué significa» · «qué no dice»</small></div>
+      <div class="caja"><b>Fuentes y fechas</b><small>tabla corta; límites de la evidencia</small></div>
+    </div>
+  </div>
+  <div class="caja"><b>Pie fijo</b><small>«Evidencia satelital con fecha y fuente; no es dictamen, peritaje ni certificación.»</small></div>
+</div></div>
+</body></html>

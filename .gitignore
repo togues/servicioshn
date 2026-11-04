@@ -1,0 +1,11 @@
+# Generado por empaquetar.sh
+dist/
+
+# Llave de Google de la demo y cualquier configuración local (regla 7: nada de secretos en el repositorio)
+config-local.js
+.env*
+
+# Capturas de las pruebas y copias superadas
+capturas/
+*.deprecated
+node_modules/

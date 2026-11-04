@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pruebas · herramienta e informe (sin red)</title>
+<link rel="stylesheet" href="../lib/leaflet.css">
+<link rel="stylesheet" href="../lib/leaflet-geoman.css">
+<link rel="stylesheet" href="../css/tokens.css">
+<link rel="stylesheet" href="../css/herramienta.css">
+<style>
+  body{margin:0;font:14px/1.4 var(--font-body);color:var(--ink);background:var(--paper)}
+  .cab{height:var(--cabecera-alto);display:flex;align-items:center;gap:16px;padding:0 16px;background:var(--surface);border-bottom:1px solid var(--line)}
+  .cab a{color:var(--brand);text-decoration:none;font-weight:600}
+</style>
+</head><body>
+<header class="cab"><b>Espacial HN · pruebas</b><a href="#/analizar">Analizar</a><a href="#/informe/x">Informe</a></header>
+<main id="vista"></main>
+<script src="../lib/leaflet.min.js"></script>
+<script src="../lib/leaflet-geoman.min.js"></script>
+<script src="config.js"></script>
+<script src="i18n/es.js"></script>
+<script src="paleta.js"></script>
+<script src="catalogo.js"></script>
+<script src="lectores/base.js"></script><script src="lectores/comun.js"></script><script src="lectores/RG-01.js"></script><script src="lectores/RG-02.js"></script><script src="lectores/RG-03.js"></script><script src="lectores/RG-04.js"></script><script src="lectores/RG-05.js"></script><script src="lectores/RG-06.js"></script><script src="lectores/RG-07.js"></script><script src="lectores/PR-01.js"></script><script src="lectores/PR-02.js"></script><script src="lectores/PR-03.js"></script><script src="lectores/PR-04.js"></script><script src="lectores/PR-05.js"></script><script src="lectores/PR-06.js"></script>
+<script src="validar.js"></script>
+<script src="mapa.js"></script>
+<script src="herramienta.js"></script>
+<script src="almacen.js"></script>
+<script>
+/* ── Simulación de red: dos APIs responden con el contrato real; el resto, error. ───────────────────────── */
+(function () {
+  ESP.config.mapa.satelite = "data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==";
+  ESP.config.mapa.calles = ESP.config.mapa.satelite;
+  ESP.config.llamadasSimultaneas = 2;
+  const aoiRef = () => [[-87.0975, 14.0115], [-87.09731, 14.0115], [-87.09731, 14.01169], [-87.0975, 14.01169]];
+  const resp = {
+    "PR-01": () => ({ status: "success", result_key: "PR1",
+      vectors: { type: "FeatureCollection", features: [
+        { type: "Feature", properties: { capa: "huella", fuente: "VIDA Google+Microsoft (HND)", anio_aparicion: 2018, altura_2023_m: 4.1, niveles_min: 1, niveles_max: 2, estado: "dentro", area_m2: 85 }, geometry: { type: "Polygon", coordinates: [[[-87.09745, 14.01155], [-87.09738, 14.01155], [-87.09738, 14.01162], [-87.09745, 14.01162], [-87.09745, 14.01155]]] } },
+        { type: "Feature", properties: { capa: "huella", fuente: "VIDA Google+Microsoft (HND)", anio_aparicion: 2021, altura_2023_m: 3.2, niveles_min: 1, niveles_max: 1, estado: "cruza el borde", area_m2: 40 }, geometry: { type: "Polygon", coordinates: [[[-87.09736, 14.01152], [-87.0973, 14.01152], [-87.0973, 14.01158], [-87.09736, 14.01158], [-87.09736, 14.01152]]] } } ] },
+      tile_url: { presencia_2023: "data:image/gif;base64,R0lGODlhAQABAIAAAP8AAAAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" },
+      stats: { por_casa: { serie: [2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023].map((a, i) => ({ anio: a, area_techo_m2: [0, 0, 85, 85, 85, 125, 125, 125][i] })),
+        aparicion_por_anio: [{ anio: 2018, m2_techo_nuevo: 85 }, { anio: 2021, m2_techo_nuevo: 40 }],
+        lectura: "La mayor parte del techo (85 m²) aparece en la imagen de 2018: compatible con construcción entre mediados de 2017 y mediados de 2018 (±1 año por la resolución)",
+        observado: { desde: "2016-06-30", hasta: "2023-06-30", cantidad: 8 }, etiquetas: { titulo: "Área techada detectada por año", unidad: "m²", serie: "serie", x: "anio", y: "area_techo_m2" }, nota: "Detalle efectivo de unos 4 m." },
+        huellas_hoy: { huellas: 2, lectura: "2 huellas de edificio (VIDA); 1 de 2018, 1 de 2021", observado: { desde: "2016", hasta: "2023", cantidad: 2 } } },
+      metadata: { area_ha: 0.04, area_m2: 400, area_varas2: 573, duracion_s: 1.2, aviso: null, faltantes: [],
+        fuentes: [{ id: "GOOGLE/Research/open-buildings-temporal/v1", nombre: "Open Buildings 2.5D Temporal", resolucion_m: 4, fechas: "2016 a 2023", licencia: "CC BY 4.0" }],
+        limites: "Evidencia satelital observada; no es prueba de posesión ni de propiedad." } }),
+    "RG-01": () => ({ status: "partial", result_key: "RG1", vectors: { type: "FeatureCollection", features: [] }, tile_url: {},
+      stats: { jrc: { lectura: "Entre 1984 y 2021 no se observa agua sobre el área de interés en ninguna imagen Landsat.", observado: { desde: "1984-03", hasta: "2021-12", cantidad: 0 } } },
+      metadata: { area_ha: 0.04, duracion_s: 3, faltantes: [{ bloque: "eventos", motivo: "sin escena de radar en la ventana" }], fuentes: [{ nombre: "JRC Global Surface Water", resolucion_m: 30, fechas: "1984-2021", licencia: "libre" }], limites: "Evidencia satelital observada; no es dictamen." } })
+  };
+  const original = window.fetch;
+  window.fetch = async (url, op) => {
+    if (String(url).includes("nominatim")) return new Response(JSON.stringify([{ lat: "14.0116", lon: "-87.0974", display_name: "Tatumbla" }]), { headers: { "Content-Type": "application/json" } });
+    const codigo = Object.keys(ESP.config.servicios).find(c => ESP.config.servicios[c] && String(url).startsWith(ESP.config.servicios[c]));
+    await new Promise(r => setTimeout(r, codigo === "RG-01" ? 1500 : 700));
+    if (codigo && resp[codigo]) return new Response(JSON.stringify(resp[codigo]()), { headers: { "Content-Type": "application/json" } });
+    return new Response(JSON.stringify({ status: "error", error: "Servicio simulado caído", details: "prueba" }), { status: 500, headers: { "Content-Type": "application/json" } });
+  };
+  // Lectores mínimos para la prueba (los reales los escriben otros): PR-01 con capa y galería; RG-01 genérico.
+  ESP.lectores = ESP.lectores || {};
+  ESP.lectores["PR-01"] = { codigo: "PR-01", leer(r, ctx) {
+    const t = ctx.t, pc = r.stats.por_casa, hu = (r.vectors.features || []).filter(f => f.properties.capa === "huella");
+    const colores = ESP.paleta.anios(hu.map(f => f.properties.anio_aparicion));
+    return { codigo: "PR-01", titulo: t.apis["PR-01"].nombre, estado: "ok", frase: pc.lectura,
+      hallazgos: [{ id: "por_casa", titulo: pc.etiquetas.titulo, texto: pc.lectura, nota: pc.nota, observado: pc.observado, escala: "4 m",
+        serie: { titulo: pc.etiquetas.titulo, unidad: pc.etiquetas.unidad, puntos: pc.serie.map(s => ({ x: s.anio, y: s.area_techo_m2 })) }, tabla: null, sinDato: null }],
+      capas: [{ id: "huellas", titulo: "Techos por año de aparición", tipo: "vector", geojson: { type: "FeatureCollection", features: hu },
+        estilo: f => ({ color: "#333", weight: 1.5, fillColor: colores[f.properties.anio_aparicion] || ESP.paleta.neutro, fillOpacity: .6 }),
+        leyenda: Object.keys(colores).map(a => ({ color: colores[a], etiqueta: a })), popup: f => `${f.properties.anio_aparicion} · ${f.properties.area_m2} m²` },
+        { id: "presencia", titulo: "Presencia 2023", tipo: "tile", url: r.tile_url.presencia_2023, opacidad: .6 }],
+      galeria: [2018, 2021].map(a => ({ titulo: String(a), sub: "Open Buildings", url: r.tile_url.presencia_2023 })),
+      fuentes: r.metadata.fuentes, limites: r.metadata.limites, aviso: null, faltantes: [], duracionS: r.metadata.duracion_s };
+  } };
+  window.__aoiRef = aoiRef;
+})();
+/* ── Mini enrutador de la página de pruebas ─────────────────────────────────────────────────────────────── */
+(function () {
+  const vista = document.getElementById("vista");
+  let actual = null;
+  function ruta() {
+    if (actual && actual.destruir) { try { actual.destruir(); } catch (e) {} }
+    const h = location.hash || "#/analizar";
+    const m = /^#\/informe\/(\w+)/.exec(h);
+    if (m) { vista.textContent = "atlas (se prueba en pruebas-e2e.cjs)"; return; }
+    actual = ESP.vistas.analizar(vista, { tarjetas: ["predio"] });
+  }
+  window.addEventListener("hashchange", ruta); ruta();
+})();
+</script>
+</body></html>
