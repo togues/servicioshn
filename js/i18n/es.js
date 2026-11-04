@@ -5,11 +5,11 @@ ESP.i18n.es = {
   marca: { nombre: "Espacial HN", lema: "Inteligencia territorial con evidencia satelital", pais: "Honduras · Centroamérica" },
   nav: { inicio: "Inicio", servicios: "Servicios", como: "Cómo funciona", analizar: "Analizar un área", idioma: "Idioma" },
   portada: {
-    titular: "Lo que el satélite sabe de su terreno, con fecha y fuente.",
+    titular: "Lo que el satélite sabe de su área de interés, con fecha y fuente.",
     apoyo: "Dibuje un área en el mapa y reciba, en minutos y en lenguaje común, lo que las imágenes satelitales abiertas muestran sobre ella: desde cuándo hay construcción, si le ha llegado el agua, qué tan cerca está de una quebrada, cómo ha cambiado año por año.",
     boton: "Analizar un área", boton2: "Ver los servicios",
     pasos: [
-      { t: "Marque el área", d: "Toque en el mapa las esquinas de su terreno, su colonia o su finca. Le avisamos si el dibujo tiene un error y cómo corregirlo." },
+      { t: "Marque el área", d: "Toque en el mapa las esquinas de su área de interés, sea una casa, su colonia o su finca. Le avisamos si el dibujo tiene un error y cómo corregirlo." },
       { t: "Elija qué quiere saber", d: "Nueve preguntas, en palabras sencillas. Marque una o varias." },
       { t: "Lea el resultado", d: "Un mapa, unas frases claras y las imágenes con su fecha. Lo puede guardar en PDF y adjuntarlo a un trámite." }
     ],
@@ -17,8 +17,8 @@ ESP.i18n.es = {
     para: [
       { t: "Alcaldías", d: "Encontrar construcciones nuevas y ampliaciones sin ir a campo; dirigir la inspección a donde hace falta." },
       { t: "Ciudadanos y sus abogados", d: "Evidencia de desde cuándo se ve una construcción, para un expediente de titulación o una controversia." },
-      { t: "Bancos y aseguradoras", d: "Saber qué muestra el satélite sobre un terreno antes de una hipoteca o una póliza." },
-      { t: "Productores y técnicos de campo", d: "Lluvia, sequía, cobertura y aptitud preliminar de una parcela." }
+      { t: "Bancos y aseguradoras", d: "Saber qué muestra el satélite sobre un área de interés antes de una hipoteca o una póliza." },
+      { t: "Productores y técnicos de campo", d: "Lluvia, sequía, cobertura y aptitud preliminar de un área de interés." }
     ],
     confianzaTitulo: "Qué entregamos y qué no",
     confianza: [
@@ -42,13 +42,13 @@ ESP.i18n.es = {
     entregaBase: ["Un mapa con las capas de lo encontrado y su leyenda", "Unas frases en lenguaje común, una por hallazgo", "Las imágenes satelitales con su fecha, cuando aplica", "Las fuentes, las fechas y los límites de la evidencia", "Todo descargable en PDF"]
   },
   tarjetas: {
-    riesgo: { nombre: "Riesgo: la historia del terreno", pregunta: "¿Se ha inundado, deslizado o quemado? ¿Qué huracanes y sismos le han pasado cerca?", corta: "Agua, deslizamientos, fuego, sequía, huracanes, sismos y costa, desde 1984 hasta hoy.",
-      sirve: "Antes de comprar, construir, prestar o asegurar: saber qué ha pasado en ese terreno, no lo que podría pasar.",
-      casos: ["Si el terreno se inundó con Eta e Iota, o con cualquier lluvia desde 1984", "Si hubo deslizamientos o cicatrices en la ladera", "Si se ha quemado y cuántas veces", "Qué huracanes pasaron y qué viento dejaron", "Qué sismos ha habido cerca"],
+    riesgo: { nombre: "Riesgo: la historia del área", pregunta: "¿Se ha inundado, deslizado o quemado? ¿Qué huracanes y sismos le han pasado cerca?", corta: "Agua, deslizamientos, fuego, sequía, huracanes, sismos y costa, desde 1984 hasta hoy.",
+      sirve: "Antes de comprar, construir, prestar o asegurar: saber qué ha pasado en esa área, no lo que podría pasar.",
+      casos: ["Si el área se inundó con Eta e Iota, o con cualquier lluvia desde 1984", "Si hubo deslizamientos o cicatrices en la ladera", "Si se ha quemado y cuántas veces", "Qué huracanes pasaron y qué viento dejaron", "Qué sismos ha habido cerca"],
       limites: "No da un número de riesgo ni dice «zona de riesgo». Dice qué se observó, cuándo y con qué dato. No sustituye a COPECO ni a un estudio geotécnico." },
     predio: { nombre: "Historial del predio", pregunta: "¿Desde cuándo se ve construcción aquí y cómo ha cambiado?", corta: "Año en que aparece cada techo, altura, niveles e imágenes por año desde 2016.",
       sirve: "Para un expediente de titulación, una regularización o una controversia de linderos: la imagen como evidencia de la fecha en que aparece la construcción.",
-      casos: ["Desde cuándo se ve la casa", "Si consta el segundo piso o la ampliación", "Cómo se veía el lote en 2017, 2019, 2022", "Si el dibujo del lote cuadra con los techos"],
+      casos: ["Desde cuándo se ve la casa", "Si consta el segundo piso o la ampliación", "Cómo se veía el área en 2017, 2019, 2022", "Si el dibujo del área cuadra con los techos"],
       limites: "El año en que aparece un techo no son años de posesión ni prueba de propiedad. Las construcciones menores de unos 30 m² pueden no verse; el año puede moverse ±1. Los datos de edificios terminan en 2023." },
     construccion: { nombre: "Construcción y entorno", pregunta: "¿Qué hay construido, de cuántos niveles, y qué se ha construido últimamente?", corta: "Edificios, niveles, cambios recientes, acceso y población cercana.",
       sirve: "Para catastro: encontrar lo que creció sin ir a campo y dirigir la visita a donde hace falta.",
@@ -56,16 +56,16 @@ ESP.i18n.es = {
       limites: "A 10 m un cambio menor de 200 m² puede no verse; las nubes de mayo a octubre atrasan la detección." },
     normativa: { nombre: "Normativa y restricciones", pregunta: "¿El área toca una quebrada, un retiro, un río o un área protegida?", corta: "Traslapes con cauces, retiros, áreas protegidas y las capas del municipio.",
       sirve: "Antes de pagar un levantamiento o pedir un permiso: saber si hay un traslape que lo va a detener.",
-      casos: ["Cuánto del lote cae en el retiro de una quebrada", "Qué tan cerca está el río más cercano", "Si está dentro de un área protegida"],
+      casos: ["Cuánto del área cae en el retiro de una quebrada", "Qué tan cerca está el río más cercano", "Si está dentro de un área protegida"],
       limites: "Los cauces de las fuentes globales tienen ±500 m de error; el retiro exacto requiere la capa municipal o un levantamiento." },
     identificacion: { nombre: "Identificación del área", pregunta: "¿Mi dibujo está bien hecho y cuadra con lo que se ve?", corta: "Área en m², varas² y hectáreas; forma; coherencia con techos y vecinos.",
       sirve: "Para el topógrafo o el operador catastral: detectar un lindero mal trazado antes de cargarlo.",
-      casos: ["Si un techo sale del lote", "Si el polígono tiene vértices duplicados o lados cruzados", "Cuánto mide el área en las unidades que use"],
+      casos: ["Si un techo sale del área", "Si el polígono tiene vértices duplicados o lados cruzados", "Cuánto mide el área en las unidades que use"],
       limites: "Los bordes de las huellas satelitales tienen 1 a 4 m de error; lo que esté dentro de ese margen no se reporta." },
     suelo: { nombre: "Suelo y relieve", pregunta: "¿Qué tan empinado es, qué suelo tiene y por dónde baja el agua?", corta: "Pendiente, textura del suelo y drenaje natural.",
       sirve: "Para decidir qué se puede construir o sembrar y dónde.",
       casos: ["La pendiente del área y de la ladera de arriba", "La textura y profundidad del suelo", "Por dónde corre el agua cuando llueve"],
-      limites: "El relieve es de 30 m y el suelo de 250 m: valores de zona, no de parcela." },
+      limites: "El relieve es de 30 m y el suelo de 250 m: valores de zona, no del área de interés." },
     clima: { nombre: "Clima y agua", pregunta: "¿Cuánto llueve, cuándo hay sequía y cuánto calor hace?", corta: "Lluvia por mes desde 1981, años secos, canícula y temperatura.",
       sirve: "Para planificar siembras, obras o abastecimiento de agua con el clima real del lugar.",
       casos: ["Qué años fueron secos y cuánto", "Cuánto dura la canícula", "Cuánto llueve cada mes"],
@@ -76,11 +76,11 @@ ESP.i18n.es = {
       limites: "Sentinel-2 a 10 m desde 2017; antes, Landsat a 30 m: se ven manzanas, no paredes." },
     aptitud: { nombre: "Aptitud agrícola", pregunta: "¿Qué tan bien se da un cultivo aquí?", corta: "Lectura preliminar de suelo, lluvia, temperatura y balance de agua.",
       sirve: "Para una primera idea antes de invertir en un estudio de suelos.",
-      casos: ["Qué zonas del terreno tienen más potencial", "Si el agua alcanza para el cultivo", "Qué temperatura y lluvia tiene el sitio"],
+      casos: ["Qué zonas del área tienen más potencial", "Si el agua alcanza para el cultivo", "Qué temperatura y lluvia tiene el sitio"],
       limites: "Preliminar; no sustituye el análisis de suelo ni la asistencia técnica." }
   },
   apis: {
-    "RG-01": { nombre: "Inundaciones históricas", pregunta: "¿Ha tenido agua encima este terreno desde 1984?" },
+    "RG-01": { nombre: "Inundaciones históricas", pregunta: "¿Ha tenido agua encima esta área desde 1984?" },
     "RG-02": { nombre: "Deslizamientos y pendiente", pregunta: "¿Qué tan empinado es y hubo cicatrices de deslizamiento?" },
     "RG-03": { nombre: "Incendios", pregunta: "¿Se ha quemado y cuántas veces desde 2000?" },
     "RG-04": { nombre: "Sequía", pregunta: "¿Qué años fueron secos, con canícula larga o calor extremo?" },
@@ -100,13 +100,13 @@ ESP.i18n.es = {
   },
   herramienta: {
     titulo: "Analizar un área", hoja: "Mostrar u ocultar los pasos",
-    paso1: { t: "Marque el área", d: "Toque en el mapa las esquinas de su terreno y cierre en el primer punto. También puede buscar un lugar o pegar coordenadas.", dibujar: "Dibujar", borrar: "Borrar", deshacer: "Deshacer el último punto", buscar: "Buscar un lugar o pegar coordenadas" },
+    paso1: { t: "Marque el área", d: "Toque en el mapa las esquinas de su área de interés y cierre en el primer punto. También puede buscar un lugar o pegar coordenadas.", dibujar: "Dibujar", borrar: "Borrar", deshacer: "Deshacer el último punto", buscar: "Buscar un lugar o pegar coordenadas" },
     paso2: { t: "¿Qué quiere saber?", d: "Marque una o varias. Un mismo análisis interno se ejecuta una sola vez aunque esté en varias.", desde: "Cambios desde (opcional)", desdeAyuda: "Solo para la vigilancia de cambios: desde qué fecha buscar construcciones o movimientos de tierra. Si se deja vacío, los últimos seis meses." },
     paso3: { t: "Analizar", d: "Tarda entre medio minuto y tres minutos según lo que elija. Puede seguir el avance de cada parte.", boton: "Analizar ahora", corriendo: "Analizando…", listo: "Ver el resultado" },
     estado: { sinDibujo: "Todavía no hay área marcada.", valido: "Dibujo válido", area: "Área", unidades: { m2: "m²", varas2: "varas²", ha: "ha" },
       invalido: "El dibujo tiene un problema", cruzado: "Dos lados se cruzan: mueva el vértice marcado en rojo.", pocosPuntos: "Faltan esquinas: marque al menos tres.",
       muyChico: "El área mide menos de 50 m²: es menos que un cuarto. Revise el dibujo.", muyGrande: "El área pasa de 500 ha. Pártala en dos o tres polígonos y analice cada uno.", coordenadasFuera: "Esas coordenadas no caen en la región; escriba latitud, longitud (por ejemplo 14.0116, -87.0974).",
-      grande: "Área grande ({ha} ha): el resultado describe la zona, no un lote. Puede seguir.", fueraCobertura: "Esta zona está fuera de Centroamérica; algunos datos no cubren aquí." },
+      grande: "Área grande ({ha} ha): el resultado describe la zona, no un sitio puntual. Puede seguir.", fueraCobertura: "Esta zona está fuera de Centroamérica; algunos datos no cubren aquí." },
     progreso: { enCola: "en cola", corriendo: "{s} s…", listo: "listo", error: "sin dato", parcial: "parcial" },
     errores: { red: "No se pudo conectar con el servicio. Revise su conexión e intente de nuevo.", servicio: "El servicio no respondió a tiempo. Intente de nuevo en un momento.", todo: "Ningún análisis respondió. Intente de nuevo." }
   },
@@ -130,7 +130,7 @@ ESP.i18n.es = {
     "PR-01": { "techo_nuevo_por_ano": "Techo nuevo por año", "4_m_open_buildings": "4 m (Open Buildings)", "techo_que_aparece_por_primera_vez_cada": "Techo que aparece por primera vez cada año", "m2": "m²", "entre": "Entre", "cambio": "Cambio", "persistente": "Persistente", "coincide_con_alphaearth": "Coincide con AlphaEarth", "no_parpadeo": "no (parpadeo)", "si": "sí", "area_techada_total_por_ano": "Área techada total por año", "huellas_de_edificio_y_ano_de_aparicion": "Huellas de edificio y año de aparición", "4_m": "4 m (", "huellas_de_edificio": "Huellas de edificio", "en_o_antes_de_2016": "en o antes de 2016", "sin_fecha": "sin fecha", "techos_por_ano_de_aparicion": "Techos por año de aparición", "cruza_el_borde": "cruza el borde", "aparece": "Aparece", "altura_2023": "Altura 2023", "m": " m", "niveles": "Niveles", "area": "Área", "origen": "Origen", "estado": "Estado", "techos_por_niveles_compatibles_2023": "Techos por niveles compatibles (2023)", "3_o_mas_niveles": "3 o más niveles", "1_nivel": "1 nivel", "hasta_2_niveles": "hasta 2 niveles", "sin_altura": "sin altura", "cambio_de_aspecto_entre_anos_alphaeart": "Cambio de aspecto entre años (AlphaEarth)", "10_m": "10 m", "cambio_de_aspecto_marcado_entre": "Cambio de aspecto marcado entre: ", "ningun_par_de_anos_con_cambio_de_aspec": "Ningún par de años con cambio de aspecto sobre el umbral", "cambio_de_aspecto_alphaearth": "Cambio de aspecto (AlphaEarth)", "antes_de_2016_por_manzana": "Antes de 2016, por manzana", "100_m_ghsl_30_m_landsat": "100 m (GHSL) · 30 m (Landsat)", "epoca": "Época", "construido_en_100_m": "% construido en 100 m", "probabilidad_de_edificio": "Probabilidad de edificio ", "muy_probable": "muy probable", "altura_de_edificios": "Altura de edificios ", "0_m": "0 m", "6_m": "6 m", "12_m": "12 m", "presencia_de_edificios": "presencia de edificios", "open_buildings": " · Open Buildings" },
     "PR-02": { "altura_del_techo_por_ano": "Altura del techo por año", "4_m_open_buildings": "4 m (Open Buildings)", "ano": "Año", "techo": "Techo", "altura_mediana": "Altura mediana", "niveles": "Niveles", "sin_techo": "sin techo", "sin_imagen": "sin imagen", "m": " m", "radar_confirma": " (radar confirma)", "techos_por_niveles_compatibles": "Techos por niveles compatibles", "4_m": "4 m (", "techos_por_niveles": "Techos por niveles", "3_o_mas_niveles": "3 o más niveles", "1_nivel": "1 nivel", "hasta_2_niveles": "hasta 2 niveles", "sin_altura": "sin altura", "techos_por_niveles_compatibles_altura_": "Techos por niveles compatibles (altura de 2023)", "cruza_el_borde": "cruza el borde", "altura_p90": "Altura p90", "area": "Área", "origen": "Origen", "radar_sobre_el_techo_por_ano": "Radar sobre el techo por año", "10_m_sentinel_1": "10 m (Sentinel-1)", "sin_saltos_de_radar_entre_anos_la_estr": "Sin saltos de radar entre años: la estructura no cambió de forma apreciable", "radar_sobre_el_techo": "Radar sobre el techo", "comparacion_con_lo_declarado": "Comparación con lo declarado", "altura_de_edificios": "Altura de edificios ", "0_m": "0 m", "6_m": "6 m", "12_m": "12 m" },
     "PR-03": { "capas_municipales": "Capas municipales", "sin_informacion_no_vinieron_capas_del_": "sin información: no vinieron capas del municipio", "la_de_cada_capa": "la de cada capa", "sin_capas_con_geometria_legible": "Sin capas con geometría legible", "sin_informacion": " · Sin información: ", "rio_mas_cercano": "Río más cercano", "500_m_hydrosheds": "500 m (HydroSHEDS)", "cauce_derivado_del_relieve": "Cauce derivado del relieve", "450_m_celda_de_acumulacion": "450 m (celda de acumulación)", "areas_protegidas": "Áreas protegidas", "decenas_a_cientos_de_m_wdpa": "decenas a cientos de m (WDPA)", "area_protegida": "Área protegida", "designacion": "Designación", "distancia": "Distancia", "traslape": "Traslape", "m": " m", "marginal": " (marginal)", "rio_mas_cercano_hydrosheds_500_m": "Río más cercano (HydroSHEDS, ±500 m)", "rio_hydrosheds_ubicacion_aproximada_50": "río HydroSHEDS (ubicación aproximada ±500 m)", "orden_de_rio": "Orden de río", "precision": "Precisión", "areas_protegidas_wdpa": "Áreas protegidas (WDPA)", "area_protegida_2": "área protegida", "fuente": "Fuente", "dentro_del_retiro": "dentro del retiro", "traslape_con_la_capa": "traslape con la capa", "traslapes_con_capas_municipales": "Traslapes con capas municipales", "capa": "Capa", "retiro": "Retiro", "superficie": "Superficie" },
-    "PR-04": { "puntos_a_revisar": "Puntos a revisar", "el_dibujo_del_poligono": "El dibujo del polígono", "metros_proyeccion_local": "metros (proyección local)", "aviso": "Aviso", "donde": "Dónde", "sugerencia": "Sugerencia", "vertice": "vértice ", "techos_y_borde_del_area": "Techos y borde del área", "1_4_m_de_borde": "1-4 m de borde (", "techo": "Techo", "sale_hacia": "Sale hacia", "m2_fuera": "m² fuera", "predios_vecinos": "Predios vecinos", "sin_informacion": "sin información", "techo_dentro_del_area": "techo dentro del área", "cruza_el_borde": "cruza el borde", "techo_que_sale_del_area": "techo que sale del área", "techos_respecto_al_borde": "Techos respecto al borde", "relacion": "Relación", "sale_del_area": "sale del área", "m2_dentro": "m² dentro", "fuente": "Fuente", "se_monta_con_un_vecino": "se monta con un vecino", "franja_entre_dibujos": "franja entre dibujos", "traslapes_y_franjas_con_vecinos": "Traslapes y franjas con vecinos", "vecino": "Vecino", "traslape": "Traslape", "separacion": "Separación", "m": " m" },
+    "PR-04": { "puntos_a_revisar": "Puntos a revisar", "el_dibujo_del_poligono": "El dibujo del polígono", "metros_proyeccion_local": "metros (proyección local)", "aviso": "Aviso", "donde": "Dónde", "sugerencia": "Sugerencia", "vertice": "vértice ", "techos_y_borde_del_area": "Techos y borde del área", "1_4_m_de_borde": "1-4 m de borde (", "techo": "Techo", "sale_hacia": "Sale hacia", "m2_fuera": "m² fuera", "predios_vecinos": "Áreas vecinas", "sin_informacion": "sin información", "techo_dentro_del_area": "techo dentro del área", "cruza_el_borde": "cruza el borde", "techo_que_sale_del_area": "techo que sale del área", "techos_respecto_al_borde": "Techos respecto al borde", "relacion": "Relación", "sale_del_area": "sale del área", "m2_dentro": "m² dentro", "fuente": "Fuente", "se_monta_con_un_vecino": "se monta con un vecino", "franja_entre_dibujos": "franja entre dibujos", "traslapes_y_franjas_con_vecinos": "Traslapes y franjas con vecinos", "vecino": "Vecino", "traslape": "Traslape", "separacion": "Separación", "m": " m" },
     "PR-05": { "construccion": "construcción", "movimiento_de_tierra": "movimiento de tierra", "parches_con_cambio": "Parches con cambio", "primer_mes": "Primer mes", "tipo": "Tipo", "m2": "m²", "del_area": "% del área", "confianza": "Confianza", "meses": "Meses", "persistencia": "Persistencia", "cambio_general_no_es_alerta": "Cambio general (no es alerta)", "10_m": "10 m", "meses_comparados": "Meses comparados", "10_m_sentinel_2": "10 m (Sentinel-2)", "radar": "Radar", "10_m_sentinel_1": "10 m (Sentinel-1)", "parches_con_cambio_por_tipo": "Parches con cambio por tipo", "superficie": "Superficie", "meses_con_cambio": "Meses con cambio", "lectura": "Lectura", "parches_por_primer_mes_visto": "Parches por primer mes visto", "primer_mes_con_cambio_raster": "Primer mes con cambio (ráster)" },
     "PR-06": { "imagenes_por_fecha": "Imágenes por fecha", "ninguna_fecha_con_imagen_despejada_sob": "Ninguna fecha con imagen despejada sobre el área de interés", "imagenes_del_area_de_interes_por_fecha": "Imágenes del área de interés por fecha", "10_m_sentinel_2_30_m_landsat": "10 m (Sentinel-2) · 30 m (Landsat)", "fecha_pedida": "Fecha pedida", "imagen": "Imagen", "satelite": "Satélite", "resolucion": "Resolución", "escenas": "Escenas", "despejado": "Despejado", "m": " m", "sin_imagen": "sin imagen", "escena": " escena", "despejado_2": " despejado", "imagen_2": "Imagen ", "fechas_sin_imagen": "Fechas sin imagen" },
   },
