@@ -34,6 +34,9 @@ ESP.atlas = (function () {
   function mapaBase(el, aoi, opciones) {
     const c = ESP.config.mapa, o = opciones || {};
     const map = L.map(el, { zoomControl: false, attributionControl: true, scrollWheelZoom: false, dragging: !o.fijo, touchZoom: !o.fijo, doubleClickZoom: !o.fijo, boxZoom: false, keyboard: !o.fijo, tap: !o.fijo });
+    // El contenedor aún no está en el documento: Leaflet no ve el `position:absolute` del CSS y le pone `relative` en línea,
+    // lo que lo deja en altura 0 (mapa en blanco). Se quita para que mande atlas.css.
+    if (el.style.position === "relative") el.style.position = "";
     map.attributionControl.setPrefix("");
     const base = o.calles ? L.tileLayer(c.calles, { maxZoom: 19, attribution: c.atribucionCalles }) : L.tileLayer(c.satelite, { maxZoom: 19, attribution: c.atribucionSatelite, opacity: o.opacidad != null ? o.opacidad : .78 });
     base.addTo(map);
@@ -251,8 +254,8 @@ ESP.atlas = (function () {
         const sale = estado.actual != null ? estado.paginas[estado.actual] : null, entra = estado.paginas[n];
         estado.actual = n; estado.barra.actualizar(n);
         if (!o.sinRuta) { const nuevo = "#/informe/" + id + "/" + n; if (location.hash !== nuevo) history.replaceState(null, "", nuevo); }
-        const mostrar = () => { entra.classList.add("at-on"); entra.removeAttribute("aria-hidden"); if (entra._mapa) entra._mapa.invalidar(); entra.scrollTop = 0; const hoja = entra.querySelector(".at-hoja"); if (hoja) hoja.scrollTop = 0; };
-        const ocultar = () => { if (sale) { sale.classList.remove("at-on"); sale.setAttribute("aria-hidden", "true"); } };
+        const mostrar = () => { entra.classList.add("at-on"); entra.inert = false; if (entra._mapa) entra._mapa.invalidar(); entra.scrollTop = 0; const hoja = entra.querySelector(".at-hoja"); if (hoja) hoja.scrollTop = 0; };
+        const ocultar = () => { if (sale) { sale.classList.remove("at-on"); sale.inert = true; } };
         if (!sale || dir === 0 || sinMovimiento()) { ocultar(); mostrar(); return; }
         estado.enTransicion = true;
         const piezas = Array.from(entra.querySelectorAll(".at-hoja > *, .at-portada-t > *, .at-contra-g > section"));
@@ -292,7 +295,7 @@ ESP.atlas = (function () {
       el.append(estado.barra, pila, estado.dialogo);
       const portada = paginaPortada(datos, atlas, T, estado.mapas, n => ctl.irA(n));
       estado.paginas = [portada, ...atlas.laminas.map(l => paginaLamina(l, datos, total, T, estado.mapas)), paginaContraportada(datos, atlas, T)];
-      estado.paginas.forEach(p => { p.setAttribute("aria-hidden", "true"); pila.append(p); });
+      estado.paginas.forEach(p => { p.inert = true; pila.append(p); });
       // Deslizar en celular (fuera del mapa)
       let x0 = null, y0 = null;
       pila.addEventListener("touchstart", e => { if (e.target.closest(".at-mapa")) { x0 = null; return; } x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
