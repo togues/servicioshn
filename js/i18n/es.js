@@ -269,6 +269,17 @@ ESP.i18n.es = {
     empezar: "Empezar", anteriorCorto: "Anterior", siguienteCorto: "Siguiente", pistaTeclado: "También puede cambiar de lámina con las flechas ← → del teclado.", pistaToque: "También puede deslizar el dedo hacia los lados para cambiar de lámina.",
     tipos: { mapa: "Mapa", grafica: "Gráfica", imagenes: "Imágenes" }
   },
+  guia: {
+    abrir: "Visita guiada", atras: "Atrás", continuar: "Continuar", terminar: "Terminar", saltar: "Saltar", pasoDe: "Paso {n} de {m}",
+    herramienta: [
+      { t: "Visita guiada", d: "En cinco pasos le mostramos cómo marcar su área de interés y pedir el análisis. Puede saltarla cuando quiera y volver a verla con el botón de ayuda." },
+      { t: "Aquí se marca el área", d: "Este es el mapa donde se dibuja el área de interés. Acérquese hasta ver el lugar que le interesa, con los botones + y − o con los dedos." },
+      { t: "Encuentre el lugar", d: "Escriba el nombre de un lugar o pegue unas coordenadas, y el mapa lo lleva hasta allí." },
+      { t: "Dibuje el área", d: "Pulse «Dibujar», toque en el mapa las esquinas de su área y cierre tocando el primer punto. «Deshacer» quita el último punto y «Borrar» empieza de nuevo." },
+      { t: "Elija qué quiere saber", d: "Marque una o varias tarjetas. Cada una trae un conjunto de láminas con evidencia satelital. Las que dicen «próximamente» todavía no están disponibles." },
+      { t: "Pida el análisis", d: "Con el área dibujada y al menos una tarjeta marcada, pulse «Analizar ahora». Tarda entre medio minuto y tres minutos; verá el avance de cada parte y, al terminar, se abre el atlas." }
+    ]
+  },
   comunes: { cargando: "Cargando…", cerrar: "Cerrar", mas: "Más", menos: "Menos", si: "Sí", no: "No", ok: "Entendido",
     sinBloque: "El servicio no devolvió esta parte", sinDatoServicio: "Sin dato: el servicio no pudo calcular esta parte", errorLectura: "No se pudo leer la respuesta del servicio", errorServicio: "El servicio no respondió" }
 };

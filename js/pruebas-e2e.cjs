@@ -7,6 +7,8 @@ const cfg = fs.readFileSync(path.join(raiz, "js/config.js"), "utf8");
   const b = await chromium.launch(); const fallas = [];
   for (const [w, h, n] of [[1500, 900, "1500"], [400, 800, "400"]]) {
     const p = await b.newPage({ viewport: { width: w, height: h } }); const errs = [];
+    // La visita guiada sale sola la primera vez; aquí se marca como vista y se prueba aparte.
+    await p.addInitScript(() => { try { localStorage.setItem("esp.guia.herramienta", "1"); } catch (e) { /* nada */ } });
     p.on("pageerror", e => errs.push(e.message)); p.on("console", m => { if (m.type() === "error") errs.push(m.text()); });
     await p.route("**/*", async r => {
       const u = r.request().url();
@@ -27,6 +29,24 @@ const cfg = fs.readFileSync(path.join(raiz, "js/config.js"), "utf8");
     await p.goto(url + "#/servicios"); await p.waitForTimeout(300);
     const disponibles = await p.$$eval(".tarjeta .chip.ok", x => x.length); console.log(n, "tarjetas disponibles:", disponibles);
     await p.goto(url + "#/analizar?t=predio,riesgo,construccion"); await p.waitForTimeout(600);
+    // Visita guiada: sale sola la primera vez, se recorre con Continuar/Atrás, se sale con Saltar y Esc, y no vuelve sola.
+    await p.evaluate(() => { localStorage.removeItem("esp.guia.herramienta"); location.hash = "#/servicios"; });
+    await p.waitForTimeout(300); await p.evaluate(() => { location.hash = "#/analizar?t=predio,riesgo,construccion"; }); await p.waitForTimeout(1800);
+    if (!(await p.$(".guia-caja"))) fallas.push(n + ": la visita guiada no salió sola");
+    else {
+      const total = +(/de (\d+)/.exec(await p.textContent(".guia-n")) || [])[1];
+      await p.click(".guia-caja .btn-p"); await p.waitForTimeout(500); await p.click(".guia-caja .btn:not(.btn-p)"); await p.waitForTimeout(300);
+      if (!/Paso 1 /.test(await p.textContent(".guia-n"))) fallas.push(n + ": Atrás no volvió al paso 1");
+      for (let k = 1; k <= total; k++) { await p.click(".guia-caja .btn-p"); await p.waitForTimeout(450); if (k === 3) await p.screenshot({ path: `capturas/e2e-guia-${n}.png` }); }
+      if (await p.$(".guia-caja")) fallas.push(n + ": Terminar no cerró la visita");
+      if (await p.evaluate(() => localStorage.getItem("esp.guia.herramienta")) !== "1") fallas.push(n + ": no recordó la visita vista");
+      const dib = await p.evaluate(() => !!document.querySelector(".h-mapa.leaflet-container")); if (!dib) fallas.push(n + ": el mapa quedó mal tras la visita");
+      await p.click(".guia-lanzador"); await p.waitForSelector(".guia-caja"); await p.keyboard.press("Escape"); await p.waitForTimeout(200);
+      if (await p.$(".guia-caja")) fallas.push(n + ": Esc no cerró la visita");
+      await p.click(".guia-lanzador"); await p.click(".guia-saltar"); await p.waitForTimeout(200);
+      if (await p.$(".guia-caja")) fallas.push(n + ": Saltar no cerró la visita");
+      console.log(n, "visita guiada: pasos", total, "OK");
+    }
     // dibujar un polígono por código
     const ok = await p.evaluate(() => { const h = ESP.herramienta && ESP.herramienta.activa; if (!h) return "sin herramienta"; h.poner([[-87.0975, 14.0115], [-87.0973, 14.0115], [-87.0973, 14.0117], [-87.0975, 14.0117]]); return h.evaluacion().estado; });
     console.log(n, "estado del dibujo:", ok);
