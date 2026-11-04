@@ -147,7 +147,7 @@ body.en-atlas .pie { display: none; }
   .at-pie-l { flex-direction: column; align-items: flex-start; gap: var(--s1); padding: var(--s2) var(--s4) var(--s3); }
   .at-portada { padding: var(--s4) var(--s4) 0; }
   .at-portada-g { grid-template-columns: 1fr; }
-  .at-portada .at-mapa-caja { position: static; min-height: 14rem; height: 36vh; max-height: 20rem; }
+  .at-portada .at-mapa-caja { position: relative; min-height: 14rem; height: 36vh; max-height: 20rem; }
   .at-portada h1 { font-size: var(--fs-5); }
   .at-portada .at-pie-l { margin: var(--s4) calc(-1 * var(--s4)) 0; }
   .at-contra-g { grid-template-columns: 1fr; }
@@ -163,7 +163,7 @@ body.en-atlas .pie { display: none; }
   .at-pag { position: static; visibility: visible !important; display: flex; height: 191mm; overflow: hidden; break-after: page; page-break-after: always; background: #fff; }
   .at-pag:last-child { break-after: auto; page-break-after: auto; }
   .at-portada, .at-contra { height: auto; min-height: 191mm; }
-  .at-portada .at-mapa-caja { position: static; height: 110mm; max-height: none; }
+  .at-portada .at-mapa-caja { position: relative; height: 110mm; max-height: none; }
   .at-cuerpo { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); }
   .at-mapa-caja, .at-lienzo, .at-como { box-shadow: none; border: 1px solid #bbb; }
   .at-hoja { overflow: hidden; }
