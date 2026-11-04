@@ -26,7 +26,7 @@ const cfg = fs.readFileSync(path.join(raiz, "js/config.js"), "utf8");
     await p.goto(url + "#/"); await p.waitForTimeout(400); await p.screenshot({ path: `capturas/e2e-portada-${n}.png`, fullPage: true });
     await p.goto(url + "#/servicios"); await p.waitForTimeout(300);
     const disponibles = await p.$$eval(".tarjeta .chip.ok", x => x.length); console.log(n, "tarjetas disponibles:", disponibles);
-    await p.goto(url + "#/analizar?t=predio,riesgo"); await p.waitForTimeout(600);
+    await p.goto(url + "#/analizar?t=predio,riesgo,construccion"); await p.waitForTimeout(600);
     // dibujar un polígono por código
     const ok = await p.evaluate(() => { const h = ESP.herramienta && ESP.herramienta.activa; if (!h) return "sin herramienta"; h.poner([[-87.0975, 14.0115], [-87.0973, 14.0115], [-87.0973, 14.0117], [-87.0975, 14.0117]]); return h.evaluacion().estado; });
     console.log(n, "estado del dibujo:", ok);
@@ -53,6 +53,18 @@ const cfg = fs.readFileSync(path.join(raiz, "js/config.js"), "utf8");
       const hashN = await p.evaluate(() => location.hash.split("/").pop()); if (hashN !== String(laminas)) fallas.push(n + ": la ruta no siguió al teclado (" + hashN + ")");
       // índice emergente
       await p.click(".at-pos"); await p.waitForTimeout(300); const dlg = await p.$(".at-dialogo:not([hidden])"); if (!dlg) fallas.push(n + ": índice no abre"); await p.keyboard.press("Escape"); await p.waitForTimeout(200);
+      // Ayuda de la lámina (piloto PR-05): el botón «i» abre la pantalla completa, trae texto, Esc cierra y el foco vuelve al botón
+      const conAyuda = await p.$$eval(".at-lam", ls => ls.map((e, i) => e.querySelector(".at-info") ? i + 1 : 0).filter(Boolean));
+      if (!conAyuda.length) fallas.push(n + ": ninguna lámina tiene botón de ayuda");
+      else {
+        await p.evaluate(k => ESP.router.actual.irA(k), conAyuda[0]); await p.waitForTimeout(900);
+        await p.click(`.at-pag[data-n="${conAyuda[0]}"] .at-info`); await p.waitForTimeout(300);
+        const ay = await p.$eval(".at-ayuda", e => ({ visible: !e.hidden, hojas: e.querySelectorAll(".at-ay-s").length, desborde: e.querySelector(".at-dialogo-c").scrollWidth > e.querySelector(".at-dialogo-c").clientWidth }));
+        if (!ay.visible || ay.hojas < 2) fallas.push(n + ": la ayuda no abre o viene vacía"); if (ay.desborde) fallas.push(n + ": la ayuda se desborda");
+        await p.keyboard.press("Escape"); await p.waitForTimeout(200);
+        const cierra = await p.$eval(".at-ayuda", e => e.hidden), foco = await p.evaluate(() => document.activeElement.className);
+        if (!cierra) fallas.push(n + ": Esc no cierra la ayuda"); if (foco !== "at-info") fallas.push(n + ": el foco no vuelve al botón de ayuda (" + foco + ")");
+      }
       // impresión: emular y capturar
       await p.emulateMedia({ media: "print" }); await p.waitForTimeout(500); await p.screenshot({ path: `capturas/atlas-print-${n}.png`, fullPage: true }); await p.emulateMedia({ media: "screen" });
     }

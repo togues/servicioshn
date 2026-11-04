@@ -135,6 +135,42 @@ ESP.i18n.es = {
     "PR-06": { "imagenes_por_fecha": "Imágenes por fecha", "ninguna_fecha_con_imagen_despejada_sob": "Ninguna fecha con imagen despejada sobre el área de interés", "imagenes_del_area_de_interes_por_fecha": "Imágenes del área de interés por fecha", "10_m_sentinel_2_30_m_landsat": "10 m (Sentinel-2) · 30 m (Landsat)", "fecha_pedida": "Fecha pedida", "imagen": "Imagen", "satelite": "Satélite", "resolucion": "Resolución", "escenas": "Escenas", "despejado": "Despejado", "m": " m", "sin_imagen": "sin imagen", "escena": " escena", "despejado_2": " despejado", "imagen_2": "Imagen ", "fechas_sin_imagen": "Fechas sin imagen" },
   },
   tema: { claro: "Cambiar a tema claro", oscuro: "Cambiar a tema oscuro" },
+  ayuda: {
+    boton: "Qué estoy viendo", titulo: "Qué estoy viendo", queVes: "En pocas palabras", colores: "Qué significan los colores",
+    palabras: "Palabras que va a encontrar", dato: "De dónde sale este dato", noDice: "Qué no dice esta lámina", volver: "Volver a la lámina",
+    // Un texto por lámina, con la clave «CÓDIGO.grupo». Sin texto no aparece el botón. Se explica qué se ve, nunca qué conclusión sacar.
+    laminas: {
+      "PR-05.parches": {
+        queVes: [
+          "Cada mancha de color es un «parche»: un pedazo del área de interés donde la imagen del satélite cambió y se mantuvo distinta. Un cambio cuenta solo si se ve en al menos dos meses y en la mayor parte de los meses revisados después.",
+          "El satélite compara cada mes con el mismo mes de dos años anteriores. Así, el pasto que se seca en verano o reverdece con las lluvias no se confunde con una obra.",
+          "Solo se dibujan parches de unos 200 m² o más. Un cambio más pequeño no aparece aquí, aunque exista."
+        ],
+        clases: {
+          "construcción": "las señales son compatibles con una construcción nueva o con un techo. No confirma una obra: es lo que el satélite ve.",
+          "movimiento de tierra": "compatible con suelo que quedó descubierto o removido, por ejemplo tierra expuesta después de quitar la vegetación.",
+          "desmonte": "compatible con que se quitó la vegetación (monte, árboles o cultivo). No dice por qué se quitó.",
+          "indeterminado": "hubo un cambio, pero las señales no forman un patrón claro. No se puede decir qué fue."
+        },
+        terminos: [
+          { t: "Confianza", d: "Aparece al tocar un parche. Es «alta» cuando varias señales de la imagen coinciden y el radar las confirma, «media» cuando coinciden menos y «baja» cuando hay pocas. Cuenta cuántas señales coinciden; no dice si algo ocurrió de verdad en el sitio." },
+          { t: "Persistencia", d: "De todos los meses revisados desde que apareció el cambio, el porcentaje en que se siguió viendo." },
+          { t: "Primer mes", d: "El primer mes en que el satélite vio el cambio. No es la fecha exacta en que ocurrió: pudo pasar antes, y las nubes pueden retrasar el momento en que se ve." },
+          { t: "Radar", d: "Un segundo satélite que ve a través de las nubes y detecta estructuras nuevas o zonas despejadas. Se usa para confirmar lo que la imagen normal sugiere." }
+        ]
+      },
+      "PR-05.parches_fecha": {
+        queVes: [
+          "Son los mismos parches de la lámina anterior, pero cada color indica el mes en que el satélite los vio por primera vez.",
+          "Sirve para ver en qué orden fue apareciendo el cambio, no para saber cuándo ocurrió exactamente."
+        ],
+        colores: "Los colores van del más claro (los primeros meses) al más oscuro (los más recientes).",
+        terminos: [
+          { t: "Primer mes", d: "El primer mes en que el satélite vio el cambio. No es la fecha exacta en que ocurrió: pudo pasar antes, y las nubes pueden retrasar el momento en que se ve." }
+        ]
+      }
+    }
+  },
   atlas: {
     titulo: "Atlas del área de interés", subtitulo: "Evidencia satelital con fecha y fuente",
     cabecera: "Área de {area} · {lugar}{fecha} · {n} láminas", fechaDe: "analizado el ", laminasN: "{n} láminas",

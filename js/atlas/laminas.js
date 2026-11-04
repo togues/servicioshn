@@ -32,23 +32,23 @@
   function laminasDeLectura(lec, tarjeta, ctx) {
     const vectores = (lec.capas || []).filter(c => c.tipo === "vector" && c.geojson && c.geojson.features && c.geojson.features.length);
     const teselas = (lec.capas || []).filter(c => c.tipo === "tile" && c.url);
-    const base = () => ({ codigo: lec.codigo, servicio: lec.titulo, tarjeta, estado: lec.estado, frase: "", hallazgos: [], capas: [], secundarias: [], leyenda: [], galeria: [], fuentes: lec.fuentes || [], limites: lec.limites || "", aviso: null, primera: false });
+    const base = () => ({ codigo: lec.codigo, servicio: lec.titulo, tarjeta, estado: lec.estado, frase: "", hallazgos: [], capas: [], secundarias: [], leyenda: [], galeria: [], ayuda: "", fuentes: lec.fuentes || [], limites: lec.limites || "", aviso: null, primera: false });
     const out = [];
 
     // 1 · grupos de vectores
     const grupos = []; const idx = {};
     vectores.forEach(c => { const g = grupoDe(c); if (idx[g] == null) { idx[g] = grupos.length; grupos.push({ clave: g, capas: [] }); } grupos[idx[g]].capas.push(c); });
     grupos.forEach(g => {
-      const l = base(); l.tipo = "mapa"; l.capas = g.capas; l.leyenda = unirLeyenda(g.capas);
+      const l = base(); l.tipo = "mapa"; l.capas = g.capas; l.leyenda = unirLeyenda(g.capas); l.ayuda = lec.codigo + "." + g.clave;
       l.titulo = g.capas.length === 1 ? g.capas[0].titulo : (g.capas[0].tituloLamina || prefijoComun(g.capas.map(c => c.titulo)));
       l.reclama = [].concat(...g.capas.map(c => c.hallazgos || []));
       out.push(l);
     });
     // 2 · teselas: secundarias de la primera lámina, o láminas propias si no hay vectores
     if (out.length) out[0].secundarias = teselas;
-    else teselas.filter(c => c.leyenda && c.leyenda.length).forEach(c => { const l = base(); l.tipo = "mapa"; l.capas = [c]; l.leyenda = c.leyenda; l.titulo = c.titulo; l.reclama = c.hallazgos || []; out.push(l); });
+    else teselas.filter(c => c.leyenda && c.leyenda.length).forEach(c => { const l = base(); l.tipo = "mapa"; l.capas = [c]; l.leyenda = c.leyenda; l.titulo = c.titulo; l.ayuda = lec.codigo + "." + c.id; l.reclama = c.hallazgos || []; out.push(l); });
     // 3 · sin mapa
-    if (!out.length && !(lec.galeria && lec.galeria.length) && (lec.hallazgos || []).some(h => !h.sinDato)) { const l = base(); l.tipo = "grafica"; l.titulo = lec.titulo; l.reclama = []; out.push(l); }
+    if (!out.length && !(lec.galeria && lec.galeria.length) && (lec.hallazgos || []).some(h => !h.sinDato)) { const l = base(); l.tipo = "grafica"; l.titulo = lec.titulo; l.reclama = []; l.ayuda = lec.codigo + ".grafica"; out.push(l); }
 
     // 4 · hallazgos → láminas
     const hs = lec.hallazgos || [], tomados = new Set();
@@ -68,7 +68,7 @@
 
     // 5 · imágenes por fecha
     if (lec.galeria && lec.galeria.length) {
-      const l = base(); l.tipo = "imagenes"; l.titulo = lec.tituloGaleria || (ctx && ctx.tituloImagenes) || "Imágenes por fecha"; l.galeria = lec.galeria.map(g => ({ ...g, tile: teselas.find(c => c.id === "img_" + g.titulo) || null }));
+      const l = base(); l.tipo = "imagenes"; l.ayuda = lec.codigo + ".imagenes"; l.titulo = lec.tituloGaleria || (ctx && ctx.tituloImagenes) || "Imágenes por fecha"; l.galeria = lec.galeria.map(g => ({ ...g, tile: teselas.find(c => c.id === "img_" + g.titulo) || null }));
       if (!out.length) { l.frase = lec.frase || ""; l.hallazgos = hs.slice(); l.primera = true; l.aviso = lec.aviso || null; }
       out.push(l);
     }

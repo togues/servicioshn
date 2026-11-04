@@ -110,14 +110,51 @@ ESP.atlas = (function () {
   const pieLamina = l => h("footer", { class: "at-pie-l" },
     l.limites ? h("p", { class: "at-nodice" }, h("b", {}, A().noDice + ". "), l.limites) : h("p", { class: "at-nodice" }, A().pie),
     h("p", { class: "at-editor" }, h("img", { src: "img/logo.svg", alt: "", width: 18, height: 18 }), A().editor));
-  const cabLamina = (l, total, T) => h("header", { class: "at-cab-l" },
+  const cabLamina = (l, total, T, ayuda) => h("header", { class: "at-cab-l" },
     h("div", { class: "at-num" }, h("span", {}, tpl(A().laminaDe, { n: l.n, m: total }))),
-    h("div", { class: "at-tit" }, h("h2", {}, l.titulo), h("p", { class: "at-sub" }, [l.tarjeta && T.tarjetas[l.tarjeta] ? T.tarjetas[l.tarjeta].nombre : null, l.servicio].filter(Boolean).join(" · "))));
+    h("div", { class: "at-tit" }, h("h2", {}, l.titulo), h("p", { class: "at-sub" }, [l.tarjeta && T.tarjetas[l.tarjeta] ? T.tarjetas[l.tarjeta].nombre : null, l.servicio].filter(Boolean).join(" · "))),
+    // El botón solo aparece en las láminas que ya tienen su texto de ayuda en i18n (se van sumando de a una)
+    ayuda && T.ayuda.laminas[l.ayuda] ? h("button", { type: "button", class: "at-info", "aria-haspopup": "dialog", "aria-label": T.ayuda.boton, title: T.ayuda.boton, onclick: e => ayuda(l, e.currentTarget) }, ic("info")) : null);
+
+  /* ── Ayuda: pantalla completa que explica en lenguaje común qué muestra la lámina. Lo fijo (qué es un parche, qué
+     significa cada clase) sale de i18n; lo que depende del análisis (leyenda, fuentes, escala, límites) sale de los datos. ── */
+  function contenidoAyuda(l, T) {
+    const AY = T.ayuda, e = AY.laminas[l.ayuda] || {};
+    const sec = (titulo, ...hijos) => h("section", { class: "at-ay-s" }, h("h3", {}, titulo), ...hijos);
+    const out = [sec(AY.queVes, (e.queVes || []).map(p => h("p", {}, p)))];
+    if (l.leyenda && l.leyenda.length) {
+      out.push(sec(AY.colores, e.colores ? h("p", {}, e.colores) : null,
+        h("ul", { class: "at-ay-ley" }, l.leyenda.map(it => h("li", {}, h("i", { style: `background:${it.color}` }), h("span", {}, h("b", {}, it.etiqueta), e.clases && e.clases[it.etiqueta] ? " · " + e.clases[it.etiqueta] : ""))))));
+    }
+    if (e.terminos && e.terminos.length) out.push(sec(AY.palabras, h("dl", {}, e.terminos.map(x => [h("dt", {}, x.t), h("dd", {}, x.d)]))));
+    const escalas = [...new Set((l.hallazgos || []).map(x => x.escala).filter(Boolean))];
+    const obs = (l.hallazgos || []).map(x => x.observado).find(o => o && o.desde);
+    const fuentes = (l.fuentes || []).map(f => [f.nombre || f.id, f.resolucion_m != null ? f.resolucion_m + " m" : null, f.fechas].filter(Boolean).join(", "));
+    if (fuentes.length || escalas.length || obs) {
+      out.push(sec(AY.dato, h("ul", {},
+        fuentes.map(f => h("li", {}, f)),
+        escalas.length ? h("li", {}, h("b", {}, A().escala + ". "), escalas.join(" · ")) : null,
+        obs ? h("li", {}, tpl(A().observado, { desde: obs.desde, hasta: obs.hasta, n: obs.cantidad != null ? obs.cantidad : "—" })) : null)));
+    }
+    out.push(sec(AY.noDice, h("p", {}, l.limites || A().pie)));
+    return out;
+  }
+  function dialogoAyuda(ctl, T) {
+    const cerrar = h("button", { type: "button", class: "at-b", "aria-label": A().cerrar, onclick: () => ctl.ayuda(null) }, ic("close"));
+    const cuerpo = h("div", { class: "at-ay-c" });
+    const titulo = h("h2", { id: "at-ay-titulo" }, T.ayuda.titulo), sub = h("p", { class: "at-ay-sub" });
+    const d = h("div", { class: "at-dialogo at-ayuda", role: "dialog", "aria-modal": "true", "aria-labelledby": "at-ay-titulo", hidden: true },
+      h("div", { class: "at-dialogo-c" }, h("header", {}, h("div", {}, titulo, sub), cerrar), cuerpo,
+        h("button", { type: "button", class: "btn btn-p at-ay-volver", onclick: () => ctl.ayuda(null) }, T.ayuda.volver)));
+    d._llenar = l => { sub.textContent = l.titulo; cuerpo.replaceChildren(...contenidoAyuda(l, T)); };
+    d._cerrar = cerrar;
+    return d;
+  }
 
   /* ── Páginas ──────────────────────────────────────────────── */
-  function paginaLamina(l, datos, total, T, mapas) {
+  function paginaLamina(l, datos, total, T, mapas, ayuda) {
     const pag = h("article", { class: "at-pag at-lam at-tipo-" + l.tipo, "data-n": l.n, "aria-label": tpl(A().laminaDe, { n: l.n, m: total }) });
-    pag.append(cabLamina(l, total, T));
+    pag.append(cabLamina(l, total, T, ayuda));
     const cuerpo = h("div", { class: "at-cuerpo" }); pag.append(cuerpo);
     if (l.tipo === "mapa") {
       const mEl = h("div", { class: "at-mapa" });
@@ -266,6 +303,12 @@ ESP.atlas = (function () {
           .to(piezas, { y: 0, opacity: 1, duration: .32, ease: "power2.out", stagger: .05 }, "-=.15");
       },
       indice(abrir) { estado.dialogo.hidden = !abrir; document.body.classList.toggle("at-dialogo-abierto", !!abrir); if (abrir) { const b = estado.dialogo.querySelector("button"); if (b) b.focus(); } },
+      // ayuda(l, botón) abre la pantalla completa de esa lámina; ayuda(null) la cierra y devuelve el foco al botón
+      ayuda(l, origen) {
+        const d = estado.ayuda; if (!d) return;
+        if (l) { estado.ayudaOrigen = origen || null; d._llenar(l); d.hidden = false; d.querySelector(".at-dialogo-c").scrollTop = 0; document.body.classList.add("at-dialogo-abierto"); d._cerrar.focus(); }
+        else { d.hidden = true; document.body.classList.remove("at-dialogo-abierto"); if (estado.ayudaOrigen) estado.ayudaOrigen.focus(); estado.ayudaOrigen = null; }
+      },
       destruir() {
         estado.destruido = true; document.body.classList.remove("en-atlas", "at-dialogo-abierto");
         window.removeEventListener("keydown", alTeclado); window.removeEventListener("beforeprint", antesImprimir); window.removeEventListener("afterprint", despuesImprimir);
@@ -273,6 +316,7 @@ ESP.atlas = (function () {
       }
     };
     const alTeclado = e => {
+      if (estado.ayuda && !estado.ayuda.hidden) { if (e.key === "Escape") ctl.ayuda(null); return; }
       if (estado.dialogo && !estado.dialogo.hidden) { if (e.key === "Escape") ctl.indice(false); return; }
       if (e.target && /INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
       if (e.key === "ArrowRight" || e.key === "PageDown") { ctl.irA(estado.actual + 1); e.preventDefault(); }
@@ -291,10 +335,10 @@ ESP.atlas = (function () {
       const total = atlas.laminas.length;
       const pila = h("div", { class: "at-pila" });
       estado.barra = barra(ctl, total);
-      estado.dialogo = dialogoIndice(ctl, atlas, T);
-      el.append(estado.barra, pila, estado.dialogo);
+      estado.dialogo = dialogoIndice(ctl, atlas, T); estado.ayuda = dialogoAyuda(ctl, T);
+      el.append(estado.barra, pila, estado.dialogo, estado.ayuda);
       const portada = paginaPortada(datos, atlas, T, estado.mapas, n => ctl.irA(n));
-      estado.paginas = [portada, ...atlas.laminas.map(l => paginaLamina(l, datos, total, T, estado.mapas)), paginaContraportada(datos, atlas, T)];
+      estado.paginas = [portada, ...atlas.laminas.map(l => paginaLamina(l, datos, total, T, estado.mapas, (lam, btn) => ctl.ayuda(lam, btn))), paginaContraportada(datos, atlas, T)];
       estado.paginas.forEach(p => { p.inert = true; pila.append(p); });
       // Deslizar en celular (fuera del mapa)
       let x0 = null, y0 = null;
