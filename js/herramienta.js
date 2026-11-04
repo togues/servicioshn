@@ -125,12 +125,27 @@ ESP.herramienta = (function () {
       h("section", { class: "h-paso" },
         h("h2", {}, h("i", {}, "3"), th.paso3.t), h("p", {}, th.paso3.d),
         btnAnalizar, progreso, errorGlobal));
-    function hoja(abierta) {
+    /* Hoja de pasos en celular: altura continua. Se queda donde la persona la deja (casi llena, a media pantalla o solo el asa
+       con el mapa completo). `hoja(true/false)` la abre a la última altura que tuvo o la baja al asa, con animación. */
+    const ASA_PX = 56, marco = () => (cuerpo.clientHeight || 600);
+    let alto = null;
+    function poner(px, animar) {
+      if (!esMovil()) { pasos.style.height = ""; pasos.style.transition = ""; alto = null; return; }
+      alto = Math.max(ASA_PX, Math.min(marco(), Math.round(px)));
+      pasos.style.transition = animar ? "" : "none";
+      pasos.style.height = alto + "px";
+      const abierta = alto > ASA_PX + 8;
+      if (abierta) ESP.herramienta.hojaUltima = alto / marco();   // proporción: sirve aunque gire la pantalla
       pasos.classList.toggle("abierta", abierta);
       asa.setAttribute("aria-expanded", String(abierta));
-      const cerrada = esMovil() && !abierta;
-      if ("inert" in contenido) contenido.inert = cerrada;
-      contenido.setAttribute("aria-hidden", cerrada ? "true" : "false");
+      if ("inert" in contenido) contenido.inert = !abierta;
+      contenido.setAttribute("aria-hidden", abierta ? "false" : "true");
+    }
+    const alturaPorDefecto = () => marco() * (ESP.herramienta.hojaUltima || .58);
+    function hoja(abierta) {
+      if (esMovil()) { poner(abierta ? alturaPorDefecto() : ASA_PX, true); return; }
+      pasos.classList.toggle("abierta", abierta); asa.setAttribute("aria-expanded", String(abierta));
+      if ("inert" in contenido) contenido.inert = false; contenido.setAttribute("aria-hidden", "false");
     }
 
     const cuerpo = h("div", { class: "h-cuerpo" }, mapaEl, pasos);
@@ -138,7 +153,7 @@ ESP.herramienta = (function () {
 
     // ── Mapa y validación ────────────────────────────────────────────────────
     let evaluacion = { estado: "vacio" };
-    const mapa = ESP.mapa.crear(mapaEl, { cubierto: () => (esMovil() ? (pasos.classList.contains("abierta") ? pasos.offsetHeight : 56) : 0), onCambio: coords => {
+    const mapa = ESP.mapa.crear(mapaEl, { cubierto: () => (esMovil() ? pasos.offsetHeight : 0), onCambio: coords => {
       evaluacion = ESP.validar.evaluar(coords, t);
       mapa.marcarVertice(evaluacion.vertice);
       pintarEstado();
@@ -174,22 +189,28 @@ ESP.herramienta = (function () {
       if (r.ok && esMovil()) hoja(false);
     });
 
-    // Hoja inferior en móvil: toque en el asa, o arrastre en vivo (la hoja sigue al dedo y al soltar se abre o se cierra).
+    // Arrastre en vivo: la hoja sigue al dedo y se queda donde se suelta. Cerca del asa se cierra del todo y cerca del tope se abre del todo.
     // El asa lleva touch-action:none en CSS: sin eso el navegador toma el gesto como «jalar para recargar».
     let arr = null, arrastro = false;
-    const cerradaPx = () => Math.max(0, pasos.offsetHeight - 56);
-    asa.addEventListener("pointerdown", e => { if (!esMovil()) return; arr = { y: e.clientY, t: e.timeStamp, base: pasos.classList.contains("abierta") ? 0 : cerradaPx(), max: cerradaPx() }; arrastro = false; asa.setPointerCapture(e.pointerId); });
+    asa.addEventListener("pointerdown", e => { if (!esMovil()) return; arr = { y: e.clientY, h: pasos.offsetHeight }; arrastro = false; asa.setPointerCapture(e.pointerId); });
     asa.addEventListener("pointermove", e => {
       if (!arr) return; const dy = e.clientY - arr.y; if (Math.abs(dy) > 6) arrastro = true; if (!arrastro) return;
-      pasos.style.transition = "none"; pasos.style.transform = "translateY(" + Math.max(0, Math.min(arr.max, arr.base + dy)) + "px)";
+      poner(arr.h - dy, false);
     });
-    const soltar = e => {
-      if (!arr) return; const dy = e.clientY - arr.y, v = dy / Math.max(1, e.timeStamp - arr.t), pos = Math.max(0, Math.min(arr.max, arr.base + dy));
-      const a = arr; arr = null; pasos.style.transition = ""; pasos.style.transform = "";
-      if (arrastro) hoja(Math.abs(v) > .4 ? v < 0 : pos < a.max / 2);
+    const soltar = () => {
+      if (!arr) return; arr = null;
+      if (arrastro) { const px = pasos.offsetHeight; poner(px < ASA_PX + 40 ? ASA_PX : px > marco() - 40 ? marco() : px, true); }
     };
     asa.addEventListener("pointerup", soltar); asa.addEventListener("pointercancel", soltar);
     asa.addEventListener("click", () => { if (arrastro) { arrastro = false; return; } hoja(!pasos.classList.contains("abierta")); });
+    // Teclado: flechas suben y bajan la hoja, Inicio la esconde y Fin la abre del todo.
+    asa.addEventListener("keydown", e => {
+      if (!esMovil()) return; const paso = Math.max(48, marco() * .1);
+      const nuevo = { ArrowUp: pasos.offsetHeight + paso, ArrowDown: pasos.offsetHeight - paso, Home: ASA_PX, End: marco() }[e.key];
+      if (nuevo != null) { e.preventDefault(); poner(nuevo, true); }
+    });
+    const alCambiarTamano = () => poner(esMovil() ? (alto == null ? alturaPorDefecto() : Math.min(alto, marco())) : 0, false);
+    window.addEventListener("resize", alCambiarTamano);
     hoja(true);
     mapa.invalidar();
     habilitar();
@@ -237,7 +258,7 @@ ESP.herramienta = (function () {
 
     const controles = [];
     const handle = { mapa, poner: anillo => mapa.poner(anillo), evaluacion: () => evaluacion, controles,
-      destruir() { controles.cancelado = true; controles.forEach(c => { try { c.abort(); } catch (e) { /* nada */ } }); mapa.destruir(); if (ESP.herramienta.activa === handle) ESP.herramienta.activa = null; } };
+      destruir() { window.removeEventListener("resize", alCambiarTamano); controles.cancelado = true; controles.forEach(c => { try { c.abort(); } catch (e) { /* nada */ } }); mapa.destruir(); if (ESP.herramienta.activa === handle) ESP.herramienta.activa = null; } };
     ESP.herramienta.activa = handle;   // para pruebas y para que el shell pueda centrar o cargar un polígono externo
     return handle;
   }

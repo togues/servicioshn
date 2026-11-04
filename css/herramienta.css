@@ -66,15 +66,15 @@
   .h-titulo{position:absolute;z-index:1100;top:var(--s2);left:var(--s2);margin:0;padding:var(--s1) var(--s3);background:var(--surface);border-radius:var(--r-sm);box-shadow:var(--sh);font-size:var(--fs-1)}
   .h-cuerpo{display:block;padding:0;height:100%}
   .h-mapa{height:100%;min-height:0;border:0;border-radius:0}
-  .h-pasos{position:absolute;left:0;right:0;bottom:0;z-index:1100;max-height:58%;background:var(--surface);border-radius:var(--r-lg) var(--r-lg) 0 0;box-shadow:var(--sh-lg);padding:0 var(--s4) calc(var(--s4) + env(safe-area-inset-bottom,0px));gap:var(--s2);overflow:auto;overscroll-behavior:contain;transform:translateY(calc(100% - 56px));transition:transform .22s ease}
-  .h-pasos.abierta{transform:none}
-  .h-asa{touch-action:none;display:block;position:sticky;top:0;width:100%;border:0;background:var(--surface);padding:var(--s3) 0 var(--s2);cursor:pointer;min-height:44px}
+  .h-pasos{position:absolute;left:0;right:0;bottom:0;z-index:1100;height:58%;max-height:100%;background:var(--surface);border-radius:var(--r-lg) var(--r-lg) 0 0;box-shadow:var(--sh-lg);padding:0 var(--s4) calc(var(--s4) + env(safe-area-inset-bottom,0px));gap:var(--s2);overflow:auto;overscroll-behavior:contain;transition:height .28s cubic-bezier(.2,.8,.2,1)}
+  .h-pasos:not(.abierta){padding-bottom:0;overflow:hidden}
+  .h-asa{touch-action:none;display:block;position:sticky;top:0;z-index:3;width:100%;border:0;background:var(--surface);padding:var(--s3) 0 var(--s2);cursor:pointer;min-height:44px}
   .h-asa:focus-visible{outline:2px solid var(--brand);outline-offset:-2px}
   .h-asa::before{content:"";display:block;width:44px;height:5px;border-radius:3px;background:var(--line-strong);margin:0 auto}
   .h-paso{border:0;border-bottom:1px solid var(--line);border-radius:0;padding:var(--s3) 0}
   .h-paso:last-child{border-bottom:0}
 }
-@media (prefers-reduced-motion:reduce){.h-pasos{transition:none}.btn.ocupado::before,.h-prog-corriendo .h-prog-spin{animation:none}}
+@media (prefers-reduced-motion:reduce){.h-pasos{transition:none!important}.btn.ocupado::before,.h-prog-corriendo .h-prog-spin{animation:none}}
 
 /* ── Informe ─────────────────────────────────────────────────────────── */
 .i-informe{max-width:var(--ancho);margin:0 auto;padding:var(--s4) max(16px,env(safe-area-inset-right,0px)) var(--s7) max(16px,env(safe-area-inset-left,0px));display:grid;gap:var(--s5)}

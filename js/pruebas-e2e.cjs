@@ -54,17 +54,22 @@ const cfg = fs.readFileSync(path.join(raiz, "js/config.js"), "utf8");
     const centro = await p.evaluate(() => { const c = ESP.herramienta.activa.mapa.map.getCenter(); return [c.lat, c.lng]; }).catch(() => null);
     if (!centro || Math.abs(centro[0] - 14.0116) > .01 || Math.abs(centro[1] + 87.0974) > .01) fallas.push(n + ": el mapa no se centró en la ubicación " + JSON.stringify(centro));
     if (w < 500) {
-      const caja = await (await p.$(".h-asa")).boundingBox(); const x = caja.x + caja.width / 2, y = caja.y + 20;
+      // Hoja de pasos: altura libre. Se queda donde se suelta; cerca del asa se esconde, cerca del tope se abre del todo.
+      const alto = () => p.$eval(".h-pasos", e => Math.round(e.getBoundingClientRect().height));
       const abierta = () => p.getAttribute(".h-asa", "aria-expanded");
-      if ((await abierta()) !== "true") fallas.push(n + ": la hoja debía empezar abierta");
-      await p.mouse.move(x, y); await p.mouse.down(); await p.mouse.move(x, y + 120, { steps: 6 }); await p.mouse.up(); await p.waitForTimeout(400);
-      if ((await abierta()) !== "false") fallas.push(n + ": arrastrar el asa hacia abajo no cerró la hoja");
-      const c2 = await (await p.$(".h-asa")).boundingBox();
-      await p.mouse.move(x, c2.y + 20); await p.mouse.down(); await p.mouse.move(x, c2.y - 150, { steps: 6 }); await p.mouse.up(); await p.waitForTimeout(400);
-      if ((await abierta()) !== "true") fallas.push(n + ": arrastrar el asa hacia arriba no abrió la hoja");
-      const c3 = await (await p.$(".h-asa")).boundingBox(); await p.mouse.click(c3.x + c3.width / 2, c3.y + 20); await p.waitForTimeout(400);
-      if ((await abierta()) !== "false") fallas.push(n + ": tocar el asa no cerró la hoja");
-      await p.click(".h-asa"); await p.waitForTimeout(400);
+      const marco = await p.$eval(".h-cuerpo", e => e.clientHeight);
+      const arrastrar = async dy => { const c = await (await p.$(".h-asa")).boundingBox(); const x = c.x + c.width / 2, y = c.y + 20; await p.mouse.move(x, y); await p.mouse.down(); await p.mouse.move(x, y + dy, { steps: 8 }); await p.mouse.up(); await p.waitForTimeout(450); };
+      const h0 = await alto(); if (Math.abs(h0 - marco * .58) > 6 || (await abierta()) !== "true") fallas.push(n + ": la hoja debía empezar al 58 % y abierta (" + h0 + " de " + marco + ")");
+      await arrastrar(120); const h1 = await alto(); if (Math.abs(h1 - (h0 - 120)) > 8 || (await abierta()) !== "true") fallas.push(n + ": arrastrar 120 px debía dejar la hoja a media altura (" + h0 + "→" + h1 + ")");
+      await arrastrar(-60); const h2 = await alto(); if (Math.abs(h2 - (h1 + 60)) > 8) fallas.push(n + ": la hoja no se quedó donde se soltó (" + h1 + "→" + h2 + ")");
+      await arrastrar(-2000); if ((await alto()) !== marco) fallas.push(n + ": arrastrar hasta arriba debía abrirla a pantalla completa");
+      await arrastrar(2000); if ((await alto()) !== 56 || (await abierta()) !== "false") fallas.push(n + ": arrastrar hasta abajo debía dejar solo el asa");
+      const c3 = await (await p.$(".h-asa")).boundingBox(); await p.mouse.click(c3.x + c3.width / 2, c3.y + 20); await p.waitForTimeout(450);
+      if ((await abierta()) !== "true" || (await alto()) < 100) fallas.push(n + ": tocar el asa cerrada debía abrir la hoja");
+      await p.focus(".h-asa"); const k0 = await alto(); await p.keyboard.press("ArrowDown"); await p.waitForTimeout(450); if ((await alto()) >= k0) fallas.push(n + ": la flecha abajo no bajó la hoja");
+      await p.keyboard.press("Home"); await p.waitForTimeout(450); if ((await alto()) !== 56) fallas.push(n + ": Inicio no escondió la hoja");
+      await p.keyboard.press("End"); await p.waitForTimeout(450); if ((await alto()) !== marco) fallas.push(n + ": Fin no abrió la hoja del todo");
+      await arrastrar(Math.round(marco * .42)); // vuelve a ~58 % para el resto de la prueba
     }
     // dibujar un polígono por código
     const ok = await p.evaluate(() => { const h = ESP.herramienta && ESP.herramienta.activa; if (!h) return "sin herramienta"; h.poner([[-87.0975, 14.0115], [-87.0973, 14.0115], [-87.0973, 14.0117], [-87.0975, 14.0117]]); return h.evaluacion().estado; });
