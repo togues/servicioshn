@@ -42,18 +42,11 @@
       const colores = P.anios(anios);
       const leyenda = Object.keys(colores).sort().map(a => ({ color: colores[a], etiqueta: String(a) === "2016" ? TX("en_o_antes_de_2016") : String(a) }));
       if (huellas.some(f => f.properties.anio_aparicion == null)) leyenda.push({ color: P.neutro, etiqueta: TX("sin_fecha") });
-      L.capas.push({ id: "huellas_anio", titulo: TX("techos_por_ano_de_aparicion"), tipo: "vector", geojson: C.fc(huellas), hallazgos: ["por_casa", "huellas_hoy", "cambio_de_aspecto", "por_manzana"],
+      L.capas.push({ id: "huellas_anio", titulo: TX("techos_por_ano_de_aparicion"), tipo: "vector", geojson: C.fc(huellas), hallazgos: ["por_casa", "area_techada", "huellas_hoy", "cambio_de_aspecto", "por_manzana"],
         estilo: f => ({ color: f.properties.estado === TX("cruza_el_borde") ? P.malo : P.tinta, weight: 1.2, fillColor: f.properties.anio_aparicion != null ? colores[f.properties.anio_aparicion] : P.neutro, fillOpacity: .65 }),
         leyenda,
         popup: f => C.popup([[TX("aparece"), f.properties.anio_aparicion_lectura], [TX("altura_2023"), f.properties.altura_2023_m != null ? C.num(f.properties.altura_2023_m, 1) + TX("m") : null], [TX("niveles"), f.properties.niveles_lectura], [TX("area"), f.properties.area_m2 != null ? C.m2(f.properties.area_m2) : null], [TX("origen"), f.properties.origen_huella], [TX("estado"), f.properties.estado]]) });
-      const niveles = huellas.map(f => f.properties.niveles_max).filter(n => n != null);
-      if (niveles.length) {
-        const presentes = [...new Set(niveles.map(n => Math.min(3, Math.max(1, n))))].sort();
-        L.capas.push({ id: "huellas_niveles", titulo: TX("techos_por_niveles_compatibles_2023"), tipo: "vector", geojson: C.fc(huellas), hallazgos: ["area_techada"],
-          estilo: f => ({ color: P.tinta, weight: 1.2, fillColor: P.deNiveles(f.properties.niveles_max), fillOpacity: .65 }),
-          leyenda: presentes.map(n => ({ color: P.niveles[n], etiqueta: n === 3 ? TX("3_o_mas_niveles") : (n === 1 ? TX("1_nivel") : TX("hasta_2_niveles")) })).concat(huellas.some(f => f.properties.niveles_max == null) ? [{ color: P.neutro, etiqueta: TX("sin_altura") }] : []),
-          popup: f => C.popup([[TX("niveles"), f.properties.niveles_lectura], [TX("altura_2023"), f.properties.altura_2023_m != null ? C.num(f.properties.altura_2023_m, 1) + TX("m") : null]]) });
-      }
+      // Los techos por niveles los dibuja PR-02 (misma huella y misma altura de 2023); repetirlos aquí daba dos láminas iguales.
     }
 
     // Hallazgo 4: cambio de aspecto (AlphaEarth)
@@ -82,6 +75,8 @@
 
     // Galería: miniaturas de probabilidad de edificio por año
     const por = mini && Array.isArray(mini.por_anio) ? mini.por_anio : [];
+    // Sin título propio saldría «Imágenes por fecha», igual que la galería satelital de PR-06, aunque no son lo mismo.
+    if (por.length) L.tituloGaleria = TX("presencia_de_edificios_por_ano");
     por.filter(m => m && m.url).forEach(m => L.galeria.push({ titulo: String(m.anio), sub: (m.capa || TX("presencia_de_edificios")) + TX("open_buildings"), url: m.url }));
     return L;
   }) };
