@@ -216,6 +216,9 @@ ESP.atlas = (function () {
           h("p", { class: "at-sobre" }, A().subtitulo),
           h("h1", {}, A().titulo),
           h("p", { class: "at-cab-txt" }, tpl(A().cabecera, { area: areaTxt, lugar: datos.lugar ? datos.lugar + " · " : "", fecha: A().fechaDe + fechaLarga(datos.fecha), n: total })),
+          h("div", { class: "at-empezar" },
+            h("button", { type: "button", class: "btn btn-p btn-lg", onclick: () => irA(1) }, A().empezar, ic("arrow_forward")),
+            h("p", { class: "at-pista" }, h("span", { class: "at-pista-teclado" }, A().pistaTeclado), h("span", { class: "at-pista-toque" }, A().pistaToque))),
           h("section", { class: "at-esencial-s" }, h("h2", {}, A().esencial), esencial),
           h("section", { class: "at-como" }, h("h3", {}, A().comoLeer), h("ul", {}, A().comoLeerTexto.map(x => h("li", {}, x)))))),
       h("section", { class: "at-indice-s" }, h("h2", {}, A().indice), indice),
@@ -246,8 +249,9 @@ ESP.atlas = (function () {
   function barra(ctl, total) {
     const b = h("nav", { class: "at-barra", "aria-label": A().titulo });
     const bPort = h("button", { type: "button", class: "at-b", title: A().portada, "aria-label": A().portada, onclick: () => ctl.irA(0) }, ic("menu_book"));
-    const bAnt = h("button", { type: "button", class: "at-b", title: A().anterior, "aria-label": A().anterior, onclick: () => ctl.irA(ctl.actual - 1) }, ic("chevron_left"));
-    const bSig = h("button", { type: "button", class: "at-b", title: A().siguiente, "aria-label": A().siguiente, onclick: () => ctl.irA(ctl.actual + 1) }, ic("chevron_right"));
+    const bAnt = h("button", { type: "button", class: "at-nav at-nav-ant", title: A().anterior, "aria-label": A().anterior, onclick: () => ctl.irA(ctl.actual - 1) }, ic("chevron_left"), h("span", { class: "at-nav-t" }, A().anteriorCorto));
+    const sigT = h("span", { class: "at-nav-t" });
+    const bSig = h("button", { type: "button", class: "at-nav at-nav-sig", title: A().siguiente, "aria-label": A().siguiente, onclick: () => ctl.irA(ctl.actual + 1) }, sigT, ic("chevron_right"));
     const pos = h("button", { type: "button", class: "at-pos", "aria-haspopup": "dialog", title: A().irIndice, onclick: () => ctl.indice(true) }, h("span", { class: "at-pos-t" }), ic("expand_more"));
     const puntos = h("div", { class: "at-puntos", "aria-hidden": "true" }, Array.from({ length: total + 2 }, (_, i) => h("i", { "data-i": i })));
     const bTema = ESP.tema ? ESP.tema.boton("at-b") : null;
@@ -258,6 +262,7 @@ ESP.atlas = (function () {
       const txt = n === 0 ? A().portada : (n > total ? A().contraportada : tpl(A().laminaDe, { n, m: total }));
       pos.querySelector(".at-pos-t").textContent = txt;
       bAnt.disabled = n <= 0; bSig.disabled = n >= total + 1;
+      sigT.textContent = n === 0 ? A().empezar : A().siguienteCorto;
       puntos.querySelectorAll("i").forEach(i => i.classList.toggle("on", +i.dataset.i === n));
     };
     return b;

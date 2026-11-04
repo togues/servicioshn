@@ -266,6 +266,7 @@ ESP.i18n.es = {
     pdf: "Guardar en PDF", nuevo: "Nuevo análisis", volverPortada: "Volver a la portada", anterior: "Lámina anterior", siguiente: "Lámina siguiente", irIndice: "Ir al índice", cerrar: "Cerrar",
     pie: "Evidencia satelital con fecha y fuente; no es dictamen, peritaje ni certificación.", generado: "Atlas generado por Espacial HN el {fecha}", editor: "Espacial HN · Inteligencia territorial",
     noExiste: "Este atlas ya no está disponible en este navegador. Haga un nuevo análisis.", cargando: "Abriendo el atlas…", deslizar: "Deslice hacia los lados para cambiar de lámina",
+    empezar: "Empezar", anteriorCorto: "Anterior", siguienteCorto: "Siguiente", pistaTeclado: "También puede cambiar de lámina con las flechas ← → del teclado.", pistaToque: "También puede deslizar el dedo hacia los lados para cambiar de lámina.",
     tipos: { mapa: "Mapa", grafica: "Gráfica", imagenes: "Imágenes" }
   },
   comunes: { cargando: "Cargando…", cerrar: "Cerrar", mas: "Más", menos: "Menos", si: "Sí", no: "No", ok: "Entendido",

@@ -188,3 +188,20 @@ body.en-atlas .pie { display: none; }
 .at-ay-ley li { display: flex; align-items: flex-start; gap: var(--s3); }
 .at-ay-ley i { flex: none; width: 20px; height: 20px; margin-top: 4px; border-radius: 4px; border: 1px solid rgba(0, 0, 0, .18); }
 .at-ay-volver { margin-top: var(--s5); width: 100%; }
+
+/* Navegación del atlas: «Anterior» y sobre todo «Siguiente» se ven y se leen; el resto de la barra queda como apoyo. */
+.at-nav { display: inline-flex; align-items: center; gap: 2px; height: 40px; padding: 0 var(--s3); border-radius: 999px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink); font: inherit; font-weight: 600; font-size: var(--fs-1); cursor: pointer; white-space: nowrap; transition: background .12s; }
+.at-nav:hover:not(:disabled) { background: var(--brand-wash); }
+.at-nav:disabled { opacity: .35; cursor: default; }
+.at-nav-sig { background: var(--brand); border-color: var(--brand); color: var(--on-brand); padding: 0 var(--s3) 0 var(--s4); }
+.at-nav-sig:hover:not(:disabled) { background: var(--prisma-700); border-color: var(--prisma-700); color: #fff; }
+.at-nav .ms { font-size: 22px; }
+.btn-lg { padding: var(--s3) var(--s5); font-size: var(--fs-2); }
+.at-empezar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s3); margin: var(--s2) 0 var(--s4); }
+.at-pista { margin: 0; color: var(--ink-muted); font-size: var(--fs-1); flex: 1 1 14rem; }
+.at-pista-toque { display: none; }
+@media (hover: none) { .at-pista-teclado { display: none; } .at-pista-toque { display: inline; } }
+@media (max-width: 30rem) { .at-nav-ant .at-nav-t { display: none; } .at-nav-ant { padding: 0 var(--s2); } }
+@media print { .at-empezar { display: none !important; } }
+/* En celular la barra es para moverse: tema (en la cabecera), PDF y nuevo análisis (en la contraportada) no caben ni hacen falta aquí. */
+@media (max-width: 40rem) { .at-barra-d { display: none; } .at-barra { justify-content: center; gap: var(--s2); } }
