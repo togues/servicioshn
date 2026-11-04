@@ -140,6 +140,88 @@ ESP.i18n.es = {
     palabras: "Palabras que va a encontrar", dato: "De dónde sale este dato", noDice: "Qué no dice esta lámina", volver: "Volver a la lámina",
     // Un texto por lámina, con la clave «CÓDIGO.grupo». Sin texto no aparece el botón. Se explica qué se ve, nunca qué conclusión sacar.
     laminas: {
+      "PR-01.huellas_anio": {
+        queVes: [
+          "Cada figura es el techo de una construcción que el satélite ve hoy dentro o junto al área de interés. El color indica el primer año en que ese techo aparece en las imágenes y se mantiene.",
+          "Es el año en que se ve, no el año en que se construyó. Las imágenes tienen un margen de más o menos un año, y una construcción muy pequeña o tapada por árboles puede aparecer tarde o no aparecer.",
+          "No dice quién construyó, quién vive ahí ni desde cuándo. Solo muestra cuándo se ve el techo."
+        ],
+        colores: "Cada color es un año distinto. Los años salen de la propia imagen, por eso la lista cambia de un análisis a otro.",
+        clases: {
+          "en o antes de 2016": "el techo ya se veía en la primera imagen (2016). No se sabe cuánto tiempo antes existía.",
+          "sin fecha": "se ve una construcción hoy, pero no se pudo fechar el año en que apareció."
+        },
+        terminos: [
+          { t: "Techo", d: "Lo que el satélite ve desde arriba. Una casa, una bodega o un galpón se ven como techo; no se distingue para qué se usa." },
+          { t: "Qué tan pequeño se ve", d: "El detalle es de unos 4 m. Una construcción menor de unos 30 m², de lámina o bajo árboles, puede no verse." }
+        ]
+      },
+      "PR-01.imagenes": {
+        queVes: [
+          "Cada imagen muestra, para un año, dónde el satélite calcula que hay edificios. No son fotografías: es un cálculo hecho a partir de imágenes de satélite.",
+          "Toque las imágenes una por una para ver cómo fue apareciendo o creciendo lo construido, año tras año.",
+          "Los tonos van del amarillo (probable) al rojo oscuro (muy probable). Donde no hay color, no se detecta edificio."
+        ],
+        terminos: [
+          { t: "Detalle", d: "Cada punto del cálculo mide unos 4 m. Los techos pequeños pueden no aparecer." },
+          { t: "Un año suelto", d: "La confianza de estos cálculos no está medida con exactitud: conviene fijarse en la tendencia de varios años y no en un solo año." }
+        ]
+      },
+      "PR-02.techos_niveles": {
+        queVes: [
+          "Son los mismos techos, pero pintados según cuántos pisos serían compatibles con la altura que se midió en 2023.",
+          "Se calcula con unos 3 m por piso. La altura tiene un error de alrededor de 1 m en techos de hasta 5 m, y de 1,6 m entre 5 y 20 m.",
+          "Por eso se dice «compatible con» y nunca «tiene»: los pisos no se cuentan, se deducen de la altura."
+        ],
+        clases: {
+          "1 nivel": "la altura es compatible con un piso.",
+          "hasta 2 niveles": "la altura es compatible con uno o dos pisos; el margen de error no deja precisar más.",
+          "3 o más niveles": "la altura es compatible con tres pisos o más.",
+          "sin altura": "se ve el techo, pero la fuente no trae su altura."
+        },
+        terminos: [
+          { t: "Altura mediana", d: "El valor del medio entre todas las alturas medidas sobre un mismo techo. Es más estable que mirar un solo punto." },
+          { t: "El techo crece o se reduce", d: "Se anota cuando entre dos años la altura sube o baja 2,5 m o más, o el área del techo cambia 25 % o más. Es un aviso de cambio, no una prueba de obra." }
+        ]
+      },
+      "PR-06.imagenes": {
+        queVes: [
+          "Son imágenes de satélite del área de interés en distintos años, para comparar el antes y el después a simple vista.",
+          "Cada una junta las tomas despejadas del año y deja fuera las nubes y las sombras.",
+          "Desde 2017 se usa Sentinel-2, donde cada punto de la imagen mide 10 m. Antes se usa Landsat, con puntos de 30 m: en un área pequeña quedan pocos puntos y no se distingue qué hay."
+        ],
+        terminos: [
+          { t: "Escenas", d: "Cuántas tomas del satélite se juntaron para armar la imagen de ese año." },
+          { t: "Despejado", d: "Qué parte del área de interés quedó sin nubes ni sombras en esa imagen." },
+          { t: "Fechas sin imagen", d: "Años en que no hubo ninguna toma despejada. No quiere decir que no haya pasado nada: quiere decir que no se pudo ver." }
+        ]
+      },
+      "RG-01.rio_mas_cercano": {
+        queVes: [
+          "La línea es el río o la quebrada más cercano al área de interés según un mapa mundial de ríos (HydroSHEDS). Puede estar lejos y quedar fuera del mapa; la distancia aparece en el texto.",
+          "Ese mapa tiene un error de hasta unos 500 m, así que la posición es aproximada, y no incluye las quebradas pequeñas.",
+          "Junto a la distancia se estima cuánto más alto está el área que el río, con un relieve de 30 m. Es una estimación, no un estudio de agua."
+        ],
+        clases: {
+          "Cauce según HydroSHEDS (ubicación aproximada)": "la línea del río o quebrada más cercano; su posición puede estar corrida hasta unos 500 m."
+        },
+        terminos: [
+          { t: "Orden del cauce", d: "Un número que dice qué tan grande es el río: 1 es el más grande, y cuanto más alto el número, más pequeño el cauce." },
+          { t: "Altura sobre el río", d: "Cuánto más alto está el área de interés que el cauce más cercano. Los bordos, los diques y los canales no se consideran." }
+        ]
+      },
+      "RG-03.quema": {
+        queVes: [
+          "Una «cicatriz de quema» es una zona donde el satélite ve que la vegetación se secó o se quemó, al comparar una imagen de antes con una de después de un foco de calor o de un área quemada detectada.",
+          "Cada fecha de la leyenda es una quema distinta. Solo se dibuja la parte que cae dentro del área de interés, con un detalle de 20 m.",
+          "Si no hubo foco de calor ni área quemada cerca de esa fecha, el cambio se anota como «cambio de cobertura sin fuego confirmado»: otras causas, como una plaga en el pino, se ven parecido."
+        ],
+        colores: "Cada color es una quema en una fecha distinta. La fecha es la de la imagen en que se ve la cicatriz, no necesariamente el día del fuego.",
+        terminos: [
+          { t: "Foco de calor", d: "Un punto donde un satélite detectó mucho calor en un día. Ubica el fuego con un error de 375 m a 1 km: indica que ardió cerca, no necesariamente dentro del área de interés." },
+          { t: "Área quemada de 25 ha", d: "Un mapa de celdas grandes que marca los meses en que algo se quemó. Sirve de contexto: describe la celda, no el área que usted dibujó." }
+        ]
+      },
       "PR-05.parches": {
         queVes: [
           "Cada mancha de color es un «parche»: un pedazo del área de interés donde la imagen del satélite cambió y se mantuvo distinta. Un cambio cuenta solo si se ve en al menos dos meses y en la mayor parte de los meses revisados después.",
