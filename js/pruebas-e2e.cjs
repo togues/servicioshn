@@ -6,7 +6,7 @@ const cfg = fs.readFileSync(path.join(raiz, "js/config.js"), "utf8");
 (async () => {
   const b = await chromium.launch(); const fallas = [];
   for (const [w, h, n] of [[1500, 900, "1500"], [400, 800, "400"]]) {
-    const p = await b.newPage({ viewport: { width: w, height: h }, geolocation: { latitude: 14.0116, longitude: -87.0974 }, permissions: ["geolocation"] }); const errs = [];
+    const p = await b.newPage({ viewport: { width: w, height: h }, geolocation: { latitude: 14.0116, longitude: -87.0974 }, permissions: ["geolocation"], hasTouch: w < 500 }); const errs = [];
     // La visita guiada sale sola la primera vez; aquí se marca como vista y se prueba aparte.
     await p.addInitScript(() => { try { localStorage.setItem("esp.guia.herramienta", "1"); } catch (e) { /* nada */ } });
     p.on("pageerror", e => errs.push(e.message)); p.on("console", m => { if (m.type() === "error") errs.push(m.text()); });
@@ -69,6 +69,24 @@ const cfg = fs.readFileSync(path.join(raiz, "js/config.js"), "utf8");
       await p.focus(".h-asa"); const k0 = await alto(); await p.keyboard.press("ArrowDown"); await p.waitForTimeout(450); if ((await alto()) >= k0) fallas.push(n + ": la flecha abajo no bajó la hoja");
       await p.keyboard.press("Home"); await p.waitForTimeout(450); if ((await alto()) !== 56) fallas.push(n + ": Inicio no escondió la hoja");
       await p.keyboard.press("End"); await p.waitForTimeout(450); if ((await alto()) !== marco) fallas.push(n + ": Fin no abrió la hoja del todo");
+      // Gesto de toque desde el cuerpo de la hoja (no solo el asa): sostener y deslizar mueve la hoja; un toque sigue siendo clic.
+      const cdp = await p.context().newCDPSession(p);
+      const deslizar = async (x, y, dy) => { await cdp.send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: [{ x, y }] }); for (let i = 1; i <= 8; i++) await cdp.send("Input.dispatchTouchEvent", { type: "touchMove", touchPoints: [{ x, y: y + dy * i / 8 }] }); await cdp.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] }); await p.waitForTimeout(500); };
+      const scroll = () => p.$eval(".h-pasos", e => Math.round(e.scrollTop));
+      await p.$eval(".h-pasos", e => { e.scrollTop = 0; });
+      await deslizar(200, 500, 150); const t1 = await alto(); if (Math.abs(t1 - (marco - 150)) > 10) fallas.push(n + ": deslizar el cuerpo hacia abajo no bajó la hoja (" + t1 + ")");
+      await deslizar(200, 500, -80); const t2 = await alto(); if (Math.abs(t2 - (t1 + 80)) > 10) fallas.push(n + ": deslizar el cuerpo hacia arriba no subió la hoja (" + t1 + "→" + t2 + ")");
+      await deslizar(200, 600, -1000); if ((await alto()) !== marco) fallas.push(n + ": deslizar el cuerpo hasta arriba no abrió la hoja del todo");
+      await deslizar(200, 600, -250); const sc = await scroll(); if (sc < 100 || (await alto()) !== marco) fallas.push(n + ": con la hoja a tope, deslizar debía desplazar el contenido (scroll " + sc + ")");
+      await deslizar(200, 300, 120); const sc2 = await scroll(); if (sc2 >= sc || (await alto()) !== marco) fallas.push(n + ": con contenido desplazado, deslizar hacia abajo debía subir el contenido, no bajar la hoja (" + sc + "→" + sc2 + ")");
+      await p.$eval(".h-pasos", e => { e.scrollTop = 0; });
+      await p.touchscreen.tap(200, 400); // un toque en el cuerpo no mueve la hoja
+      if ((await alto()) !== marco) fallas.push(n + ": un toque en el cuerpo movió la hoja");
+      const bD = await (await p.$(".h-botones .btn-p")).boundingBox(); await p.touchscreen.tap(bD.x + bD.width / 2, bD.y + bD.height / 2); await p.waitForTimeout(500);
+      if ((await alto()) !== 56) fallas.push(n + ": tocar «Dibujar» debía seguir funcionando como clic (la hoja baja al asa)");
+      await p.evaluate(() => ESP.herramienta.activa.mapa.map.pm.disableDraw());
+      const ca = await (await p.$(".h-asa")).boundingBox(); await p.touchscreen.tap(ca.x + ca.width / 2, ca.y + 20); await p.waitForTimeout(500);
+      if ((await abierta()) !== "true") fallas.push(n + ": tocar el asa con el dedo debía abrir la hoja");
       await arrastrar(Math.round(marco * .42)); // vuelve a ~58 % para el resto de la prueba
     }
     // dibujar un polígono por código
