@@ -39,7 +39,7 @@ body.en-atlas .pie { display: none; }
 .at-mapa .leaflet-container { background: var(--next-wash); font-family: var(--font-body); }
 .at-encuadrar { position: absolute; right: 10px; top: 76px; z-index: 600; width: 34px; height: 34px; border-radius: 4px; border: 2px solid rgba(0,0,0,.2); background: #fff; color: #111; display: grid; place-items: center; cursor: pointer; }
 .at-encuadrar .ms { font-size: 20px; }
-.at-hoja { min-height: 0; overflow: auto; display: grid; gap: var(--s4); align-content: start; padding-right: var(--s1); scrollbar-width: thin; }
+.at-hoja { min-height: 0; overflow: auto; display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s4); align-content: start; padding-right: var(--s1); scrollbar-width: thin; }
 .at-hoja h3, .at-notas h3, .at-contra-g h3 { margin: 0 0 var(--s2); font-size: var(--fs-0); letter-spacing: .1em; text-transform: uppercase; color: var(--brand); font-weight: 700; }
 .at-frase { margin: 0; font-size: var(--fs-3); line-height: 1.45; max-width: none; }
 .at-aviso { margin: 0; padding: var(--s2) var(--s3); background: var(--warn-wash); color: var(--warn); border-radius: var(--r-sm); font-size: var(--fs-1); }
@@ -139,11 +139,11 @@ body.en-atlas .pie { display: none; }
   .at-lam .at-cuerpo { min-height: 0; }
   .at-cab-l { padding: var(--s3) var(--s4) var(--s2); }
   .at-tit h2 { font-size: var(--fs-3); }
-  .at-cuerpo { grid-template-columns: 1fr; grid-template-rows: auto auto; padding: 0 var(--s4) var(--s3); gap: var(--s3); }
+  .at-cuerpo { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto; padding: 0 var(--s4) var(--s3); gap: var(--s3); }
   .at-mapa-caja { height: 42vh; min-height: 16rem; }
   .at-encuadrar { top: 10px; }
   .at-hoja { overflow: visible; }
-  .at-tipo-grafica .at-cuerpo { grid-template-columns: 1fr; }
+  .at-tipo-grafica .at-cuerpo { grid-template-columns: minmax(0, 1fr); }
   .at-pie-l { flex-direction: column; align-items: flex-start; gap: var(--s1); padding: var(--s2) var(--s4) var(--s3); }
   .at-portada { padding: var(--s4) var(--s4) 0; }
   .at-portada-g { grid-template-columns: 1fr; }
