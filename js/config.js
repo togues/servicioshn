@@ -9,8 +9,9 @@ ESP.config = {
     "RG-03": "https://esp-rg-03-incendio-836767096392.us-south1.run.app",
     "RG-04": "https://esp-rg-04-sequia-836767096392.us-south1.run.app",
     "RG-05": "https://esp-rg-05-huracan-viento-836767096392.us-south1.run.app",
-    "RG-06": "https://esp-rg-06-sismo-volcan-836767096392.us-south1.run.app",
-    "RG-07": "https://esp-rg-07-costa-836767096392.us-south1.run.app",
+    // RG-06 y RG-07 están escritas pero sin desplegar en Cloud Run (verificado 3 nov 2026): vacías = «próximamente».
+    "RG-06": "",
+    "RG-07": "",
     "PR-01": "https://esp-pr-01-linea-tiempo-836767096392.us-south1.run.app",
     "PR-02": "https://esp-pr-02-niveles-ampliaciones-836767096392.us-south1.run.app",
     "PR-03": "https://esp-pr-03-traslapes-836767096392.us-south1.run.app",
