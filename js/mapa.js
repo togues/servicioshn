@@ -12,7 +12,42 @@ ESP.mapa = (function () {
     };
   }
 
-  /* opciones: { onCambio(coords) } — coords es la lista [lon,lat] sin cerrar, o [] si no hay dibujo. */
+  /* «Mi ubicación»: centra el mapa donde está la persona. La posición se usa solo para mover el mapa en este navegador:
+     no se guarda ni se envía a ningún servicio. Fuera de la región cubierta o sin permiso, el mapa se queda donde estaba. */
+  function ubicacion(map, tm, cubierto) {
+    let punto = null, aviso = null;
+    const ir = (pos, suave) => {
+      const lat = pos.coords.latitude, lon = pos.coords.longitude;
+      if (ESP.validar && ESP.validar.enCobertura && !ESP.validar.enCobertura([lon, lat])) { if (!suave) mostrar(tm.ubicacionFuera || "Su ubicación está fuera de la región cubierta."); return false; }
+      if (punto) map.removeLayer(punto);
+      punto = L.circleMarker([lat, lon], { radius: 7, color: "#fff", weight: 2, fillColor: ESP.paleta.marca, fillOpacity: 1, interactive: false }).addTo(map);
+      map.setView([lat, lon], Math.max(map.getZoom(), 16), { animate: false });
+      const tapa = cubierto ? cubierto() : 0; if (tapa > 0) map.panBy([0, tapa / 2], { animate: false });   // lo que tapa la hoja inferior no cuenta como mapa visible
+      return true;
+    };
+    const mostrar = txt => { if (!aviso) return; aviso.textContent = txt; aviso.hidden = !txt; clearTimeout(mostrar.t); if (txt) mostrar.t = setTimeout(() => { aviso.hidden = true; }, 5000); };
+    const pedir = (suave, hayDibujo) => {
+      if (!navigator.geolocation) { if (!suave) mostrar(tm.ubicacionNo || "Este navegador no puede dar su ubicación."); return; }
+      navigator.geolocation.getCurrentPosition(pos => { if (!(suave && hayDibujo && hayDibujo())) ir(pos, suave); },
+        () => { if (!suave) mostrar(tm.ubicacionNo || "No se pudo obtener su ubicación. Revise el permiso del navegador."); }, { enableHighAccuracy: false, timeout: 10000, maximumAge: 60000 });
+    };
+    const Ctl = L.Control.extend({
+      options: { position: "topright" },
+      onAdd() {
+        const caja = L.DomUtil.create("div", "leaflet-bar h-ubic");
+        const b = L.DomUtil.create("a", "h-ubic-b", caja); b.href = "#"; b.setAttribute("role", "button");
+        b.title = b.ariaLabel = tm.miUbicacion || "Mi ubicación"; b.innerHTML = '<span class="ms" aria-hidden="true">my_location</span>';
+        aviso = L.DomUtil.create("div", "h-ubic-aviso", caja); aviso.hidden = true; aviso.setAttribute("role", "status");
+        L.DomEvent.disableClickPropagation(caja);
+        L.DomEvent.on(b, "click", e => { L.DomEvent.preventDefault(e); pedir(false); });
+        return caja;
+      }
+    });
+    new Ctl().addTo(map);
+    return { alIniciar(hayDibujo) { pedir(true, hayDibujo); } };
+  }
+
+  /* opciones: { onCambio(coords), cubierto() → px de abajo tapados por otra pieza } — coords es la lista [lon,lat] sin cerrar, o [] si no hay dibujo. */
   function crear(el, opciones) {
     const op = opciones || {};
     const c = cfg();
@@ -22,6 +57,11 @@ ESP.mapa = (function () {
     b.satelite.addTo(map);
     let baseActual = "satelite";
     L.control.scale({ metric: true, imperial: false, position: "bottomleft" }).addTo(map);
+    // Capas: imagen satelital y calles, ambas de Esri (sin llave). El control y la API `base()` quedan sincronizados.
+    const tm = (ESP.t && ESP.t().mapa) || {};
+    L.control.layers({ [tm.satelite || "Satélite"]: b.satelite, [tm.calles || "Calles"]: b.calles }, {}, { collapsed: true, position: "topright" }).addTo(map);
+    map.on("baselayerchange", e => { baseActual = e.layer === b.calles ? "calles" : "satelite"; });
+    const ubic = ubicacion(map, tm, op.cubierto);
 
     const capa = L.geoJSON(null, { style: { color: ESP.paleta.acento, weight: 3, fillOpacity: .12, fillColor: ESP.paleta.acento } }).addTo(map);
     let culpable = null;                       // marcador del vértice con problema
@@ -118,6 +158,7 @@ ESP.mapa = (function () {
       invalidar() { setTimeout(() => map.invalidateSize(), 50); },
       destruir() { map.remove(); }
     };
+    ubic.alIniciar(() => coords.length > 0);     // al abrir, si la persona lo permite, el mapa la lleva a donde está
     return api;
   }
 

@@ -94,6 +94,7 @@
 .pie b { color: var(--ink); }
 .pie-d { max-width: var(--ancho); margin: 0 auto; font-size: var(--fs-0); color: var(--ink-faint); }
 body.en-herramienta .pie { display: none; }
+body.en-herramienta { overscroll-behavior-y: contain; }   /* en la herramienta un deslizar no recarga la página */
 
 @media (max-width: 64rem) {
   .tema-sitio { margin-left: auto; }

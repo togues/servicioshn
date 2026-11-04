@@ -138,7 +138,7 @@ ESP.herramienta = (function () {
 
     // ── Mapa y validación ────────────────────────────────────────────────────
     let evaluacion = { estado: "vacio" };
-    const mapa = ESP.mapa.crear(mapaEl, { onCambio: coords => {
+    const mapa = ESP.mapa.crear(mapaEl, { cubierto: () => (esMovil() ? (pasos.classList.contains("abierta") ? pasos.offsetHeight : 56) : 0), onCambio: coords => {
       evaluacion = ESP.validar.evaluar(coords, t);
       mapa.marcarVertice(evaluacion.vertice);
       pintarEstado();
@@ -174,11 +174,22 @@ ESP.herramienta = (function () {
       if (r.ok && esMovil()) hoja(false);
     });
 
-    // Hoja inferior en móvil: toque en el asa o arrastre
-    asa.addEventListener("click", () => hoja(!pasos.classList.contains("abierta")));
-    let y0 = null;
-    asa.addEventListener("touchstart", e => { y0 = e.touches[0].clientY; }, { passive: true });
-    asa.addEventListener("touchend", e => { if (y0 == null) return; const dy = e.changedTouches[0].clientY - y0; if (dy < -20) hoja(true); if (dy > 20) hoja(false); y0 = null; });
+    // Hoja inferior en móvil: toque en el asa, o arrastre en vivo (la hoja sigue al dedo y al soltar se abre o se cierra).
+    // El asa lleva touch-action:none en CSS: sin eso el navegador toma el gesto como «jalar para recargar».
+    let arr = null, arrastro = false;
+    const cerradaPx = () => Math.max(0, pasos.offsetHeight - 56);
+    asa.addEventListener("pointerdown", e => { if (!esMovil()) return; arr = { y: e.clientY, t: e.timeStamp, base: pasos.classList.contains("abierta") ? 0 : cerradaPx(), max: cerradaPx() }; arrastro = false; asa.setPointerCapture(e.pointerId); });
+    asa.addEventListener("pointermove", e => {
+      if (!arr) return; const dy = e.clientY - arr.y; if (Math.abs(dy) > 6) arrastro = true; if (!arrastro) return;
+      pasos.style.transition = "none"; pasos.style.transform = "translateY(" + Math.max(0, Math.min(arr.max, arr.base + dy)) + "px)";
+    });
+    const soltar = e => {
+      if (!arr) return; const dy = e.clientY - arr.y, v = dy / Math.max(1, e.timeStamp - arr.t), pos = Math.max(0, Math.min(arr.max, arr.base + dy));
+      const a = arr; arr = null; pasos.style.transition = ""; pasos.style.transform = "";
+      if (arrastro) hoja(Math.abs(v) > .4 ? v < 0 : pos < a.max / 2);
+    };
+    asa.addEventListener("pointerup", soltar); asa.addEventListener("pointercancel", soltar);
+    asa.addEventListener("click", () => { if (arrastro) { arrastro = false; return; } hoja(!pasos.classList.contains("abierta")); });
     hoja(true);
     mapa.invalidar();
     habilitar();

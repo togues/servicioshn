@@ -15,6 +15,6 @@
 .guia-lanzador:hover { background: var(--brand-wash); }
 .guia-lanzador .ms { font-size: 22px; }
 body.guia-abierta .guia-lanzador { visibility: hidden; }
-@media (max-width: 64rem) { .guia-lanzador { right: var(--s2); top: calc(var(--cabecera-alto) + var(--s2)); padding: 0; width: 40px; justify-content: center; } .guia-lanzador-t { display: none; } }
+@media (max-width: 64rem) { .guia-lanzador { right: auto; left: var(--s2); top: calc(var(--cabecera-alto) + 44px); padding: 0; width: 40px; justify-content: center; } .guia-lanzador-t { display: none; } }
 @media (prefers-reduced-motion: reduce) { .guia-foco { transition: none; } }
 @media print { .guia, .guia-lanzador { display: none !important; } }

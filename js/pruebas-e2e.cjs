@@ -6,7 +6,7 @@ const cfg = fs.readFileSync(path.join(raiz, "js/config.js"), "utf8");
 (async () => {
   const b = await chromium.launch(); const fallas = [];
   for (const [w, h, n] of [[1500, 900, "1500"], [400, 800, "400"]]) {
-    const p = await b.newPage({ viewport: { width: w, height: h } }); const errs = [];
+    const p = await b.newPage({ viewport: { width: w, height: h }, geolocation: { latitude: 14.0116, longitude: -87.0974 }, permissions: ["geolocation"] }); const errs = [];
     // La visita guiada sale sola la primera vez; aquí se marca como vista y se prueba aparte.
     await p.addInitScript(() => { try { localStorage.setItem("esp.guia.herramienta", "1"); } catch (e) { /* nada */ } });
     p.on("pageerror", e => errs.push(e.message)); p.on("console", m => { if (m.type() === "error") errs.push(m.text()); });
@@ -46,6 +46,25 @@ const cfg = fs.readFileSync(path.join(raiz, "js/config.js"), "utf8");
       await p.click(".guia-lanzador"); await p.click(".guia-saltar"); await p.waitForTimeout(200);
       if (await p.$(".guia-caja")) fallas.push(n + ": Saltar no cerró la visita");
       console.log(n, "visita guiada: pasos", total, "OK");
+    }
+    // Mapa: control de capas (satélite / calles), centrado en la ubicación y hoja de pasos arrastrable en celular.
+    await p.waitForTimeout(800);
+    if (!(await p.$(".h-mapa .leaflet-control-layers"))) fallas.push(n + ": falta el control de capas");
+    if (!(await p.$(".h-mapa .h-ubic-b"))) fallas.push(n + ": falta el botón Mi ubicación");
+    const centro = await p.evaluate(() => { const c = ESP.herramienta.activa.mapa.map.getCenter(); return [c.lat, c.lng]; }).catch(() => null);
+    if (!centro || Math.abs(centro[0] - 14.0116) > .01 || Math.abs(centro[1] + 87.0974) > .01) fallas.push(n + ": el mapa no se centró en la ubicación " + JSON.stringify(centro));
+    if (w < 500) {
+      const caja = await (await p.$(".h-asa")).boundingBox(); const x = caja.x + caja.width / 2, y = caja.y + 20;
+      const abierta = () => p.getAttribute(".h-asa", "aria-expanded");
+      if ((await abierta()) !== "true") fallas.push(n + ": la hoja debía empezar abierta");
+      await p.mouse.move(x, y); await p.mouse.down(); await p.mouse.move(x, y + 120, { steps: 6 }); await p.mouse.up(); await p.waitForTimeout(400);
+      if ((await abierta()) !== "false") fallas.push(n + ": arrastrar el asa hacia abajo no cerró la hoja");
+      const c2 = await (await p.$(".h-asa")).boundingBox();
+      await p.mouse.move(x, c2.y + 20); await p.mouse.down(); await p.mouse.move(x, c2.y - 150, { steps: 6 }); await p.mouse.up(); await p.waitForTimeout(400);
+      if ((await abierta()) !== "true") fallas.push(n + ": arrastrar el asa hacia arriba no abrió la hoja");
+      const c3 = await (await p.$(".h-asa")).boundingBox(); await p.mouse.click(c3.x + c3.width / 2, c3.y + 20); await p.waitForTimeout(400);
+      if ((await abierta()) !== "false") fallas.push(n + ": tocar el asa no cerró la hoja");
+      await p.click(".h-asa"); await p.waitForTimeout(400);
     }
     // dibujar un polígono por código
     const ok = await p.evaluate(() => { const h = ESP.herramienta && ESP.herramienta.activa; if (!h) return "sin herramienta"; h.poner([[-87.0975, 14.0115], [-87.0973, 14.0115], [-87.0973, 14.0117], [-87.0975, 14.0117]]); return h.evaluacion().estado; });
