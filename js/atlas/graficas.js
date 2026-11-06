@@ -7,7 +7,6 @@ ESP.atlasUI = (function () {
     const el = document.createElement(tag);
     for (const k in (attrs || {})) {
       if (k === "class") el.className = attrs[k];
-      else if (k === "html") el.innerHTML = attrs[k];
       else if (k.startsWith("on")) el.addEventListener(k.slice(2), attrs[k]);
       else if (attrs[k] != null && attrs[k] !== false) el.setAttribute(k, attrs[k] === true ? "" : attrs[k]);
     }

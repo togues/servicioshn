@@ -5,8 +5,8 @@
   const ESP = window.ESP;
   const G = () => ESP.t().guia;
   const clave = n => "esp.guia." + n;
-  const visto = n => { try { return localStorage.getItem(clave(n)) === "1"; } catch (e) { return false; } };
-  const marcar = n => { try { localStorage.setItem(clave(n), "1"); } catch (e) { /* sin almacenamiento: se ofrecerá otra vez */ } };
+  const visto = n => { try { return localStorage.getItem(clave(n)) === "1"; } catch { return false; } };
+  const marcar = n => { try { localStorage.setItem(clave(n), "1"); } catch { /* sin almacenamiento: se ofrecerá otra vez */ } };
   const sinMovimiento = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const movil = () => window.matchMedia("(max-width: 64rem)").matches;
 
@@ -41,7 +41,7 @@
     let i = 0, objetivo = null;
 
     function colocar() {
-      const p = pasos[i], vw = window.innerWidth, vh = window.innerHeight, m = 12;
+      const vw = window.innerWidth, vh = window.innerHeight, m = 12;
       const r = objetivo ? objetivo.getBoundingClientRect() : null;
       if (r) { const pad = 6; Object.assign(foco.style, { display: "block", top: r.top - pad + "px", left: r.left - pad + "px", width: r.width + pad * 2 + "px", height: r.height + pad * 2 + "px" }); }
       else foco.style.display = "none";
@@ -101,7 +101,7 @@
       window.removeEventListener("keydown", alTeclado, true); window.removeEventListener("resize", reubicar);
       raiz.remove(); document.body.classList.remove("guia-abierta"); activa = null;
       window.scrollTo({ top: scrollInicial });
-      try { (opc && opc.origen || origenFoco).focus(); } catch (e) { /* nada */ }
+      try { (opc && opc.origen || origenFoco).focus(); } catch { /* nada */ }
       if (opc && opc.alCerrar) opc.alCerrar(completa);
     }
 

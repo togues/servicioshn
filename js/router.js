@@ -12,7 +12,7 @@ ESP.router = {
     const h = location.hash.replace(/^#\/?/, "");
     const [ruta, q] = h.split("?");
     const partes = ruta.split("/").filter(Boolean);
-    const dec = x => { try { return decodeURIComponent(x); } catch (e) { return x; } };
+    const dec = x => { try { return decodeURIComponent(x); } catch { return x; } };
     const params = {}; (q || "").split("&").forEach(p => { const [k, v] = p.split("="); if (k) params[dec(k)] = dec(v || ""); });
     return { nombre: partes[0] || "", id: partes[1] || "", extra: partes[2] || "", params };
   },
@@ -21,7 +21,7 @@ ESP.router = {
     const r = this.leer(), el = document.getElementById("vista"), V = ESP.vistas;
     // Misma vista, mismo resultado: solo cambia de lámina (el atlas no se vuelve a construir)
     if (this.actual && this.actual.ruta === r.nombre && this.actual.id === r.id && this.actual.irA) { this.actual.irA(r.extra, { sinRuta: true }); return; }
-    if (this.actual) { const f = this.actual.destruir || this.actual.salir; if (f) { try { f.call(this.actual); } catch (e) { /* nada */ } } }
+    if (this.actual) { const f = this.actual.destruir || this.actual.salir; if (f) { try { f.call(this.actual); } catch { /* nada */ } } }
     el.innerHTML = ""; el.className = "vista vista-" + (r.nombre || "portada");
     document.body.classList.toggle("en-herramienta", r.nombre === "analizar" || r.nombre === "informe");
     document.querySelectorAll(".nav a[data-ruta]").forEach(a => a.toggleAttribute("aria-current", a.dataset.ruta === r.nombre));

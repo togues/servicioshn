@@ -9,7 +9,6 @@ ESP.atlas = (function () {
   const t = () => ESP.t(), A = () => t().atlas;
   const tpl = (s, v) => String(s || "").replace(/\{(\w+)\}/g, (_, k) => (v[k] != null ? v[k] : ""));
   const fechaLarga = iso => new Date(iso).toLocaleDateString("es-HN", { day: "numeric", month: "long", year: "numeric" });
-  const esMovil = () => window.matchMedia("(max-width: 64rem)").matches;
   const sinMovimiento = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches || !window.gsap;
   const ic = n => h("span", { class: "ms", "aria-hidden": "true" }, n);
 
@@ -42,9 +41,9 @@ ESP.atlas = (function () {
     base.addTo(map);
     if (!o.fijo) { L.control.zoom({ position: "topright" }).addTo(map); L.control.scale({ metric: true, imperial: false, position: "bottomleft" }).addTo(map); }
     const contorno = L.geoJSON(aoi, { style: { color: ESP.paleta.acento, weight: 3, fill: false, dashArray: o.fijo ? null : "0" } }).addTo(map);
-    const encuadrar = () => { try { map.fitBounds(contorno.getBounds(), { padding: o.padding || [28, 28], maxZoom: o.maxZoom || 19 }); } catch (e) { map.setView(c.centro, c.zoom); } };
+    const encuadrar = () => { try { map.fitBounds(contorno.getBounds(), { padding: o.padding || [28, 28], maxZoom: o.maxZoom || 19 }); } catch { map.setView(c.centro, c.zoom); } };
     encuadrar();
-    return { map, contorno, encuadrar, invalidar() { setTimeout(() => { map.invalidateSize(); encuadrar(); }, 30); }, destruir() { try { map.remove(); } catch (e) { /* nada */ } } };
+    return { map, contorno, encuadrar, invalidar() { setTimeout(() => { map.invalidateSize(); encuadrar(); }, 30); }, destruir() { try { map.remove(); } catch { /* nada */ } } };
   }
   function capaLeaflet(c) {
     if (c.tipo === "vector" && c.geojson && c.geojson.features && c.geojson.features.length) {
@@ -225,7 +224,7 @@ ESP.atlas = (function () {
       h("footer", { class: "at-pie-l" }, h("p", { class: "at-nodice" }, A().pie), h("p", { class: "at-editor" }, h("img", { src: "img/logo.svg", alt: "", width: 18, height: 18 }), A().editor)));
     const m = mapaBase(mEl, datos.aoi, { calles: true, fijo: true, padding: [60, 60], maxZoom: 13 });
     // Situación: el área en su entorno, no a tope
-    m.encuadrar = () => { try { const b = m.contorno.getBounds(); m.map.setView(b.getCenter(), Math.min(13, m.map.getBoundsZoom(b.pad(1)) - 3)); } catch (e) { /* nada */ } }; m.encuadrar();
+    m.encuadrar = () => { try { const b = m.contorno.getBounds(); m.map.setView(b.getCenter(), Math.min(13, m.map.getBoundsZoom(b.pad(1)) - 3)); } catch { /* nada */ } }; m.encuadrar();
     mapas.push(m); pag._mapa = m;
     return pag;
   }
@@ -328,7 +327,7 @@ ESP.atlas = (function () {
       else if (e.key === "ArrowLeft" || e.key === "PageUp") { ctl.irA(estado.actual - 1); e.preventDefault(); }
       else if (e.key === "Home") ctl.irA(0); else if (e.key === "End") ctl.irA(estado.paginas.length - 1);
     };
-    const antesImprimir = () => { el.classList.add("at-imprimiendo"); estado.mapas.forEach(m => { try { m.map.invalidateSize(); m.encuadrar(); } catch (e) { /* nada */ } }); };
+    const antesImprimir = () => { el.classList.add("at-imprimiendo"); estado.mapas.forEach(m => { try { m.map.invalidateSize(); m.encuadrar(); } catch { /* nada */ } }); };
     const despuesImprimir = () => el.classList.remove("at-imprimiendo");
 
     Promise.resolve(ESP.resultados.leer(id) || ESP.resultados.cargar(id)).then(datos => {

@@ -63,7 +63,7 @@ ESP.mapa = (function () {
     map.on("baselayerchange", e => { baseActual = e.layer === b.calles ? "calles" : "satelite"; });
     const ubic = ubicacion(map, tm, op.cubierto);
 
-    const capa = L.geoJSON(null, { style: { color: ESP.paleta.acento, weight: 3, fillOpacity: .12, fillColor: ESP.paleta.acento } }).addTo(map);
+    L.geoJSON(null, { style: { color: ESP.paleta.acento, weight: 3, fillOpacity: .12, fillColor: ESP.paleta.acento } }).addTo(map);
     let culpable = null;                       // marcador del vértice con problema
     let poligono = null;                       // capa Geoman activa (editable)
     let coords = [];
@@ -175,7 +175,7 @@ ESP.mapa = (function () {
     return {
       map, control,
       agregar(titulo, capa, visible) { if (visible !== false) capa.addTo(map); control.addOverlay(capa, titulo); return capa; },
-      ajustar() { try { map.fitBounds(contorno.getBounds(), { padding: [30, 30] }); } catch (e) { /* sin aoi */ } },
+      ajustar() { try { map.fitBounds(contorno.getBounds(), { padding: [30, 30] }); } catch { /* sin aoi */ } },
       invalidar() { setTimeout(() => map.invalidateSize(), 50); },
       destruir() { map.remove(); }
     };

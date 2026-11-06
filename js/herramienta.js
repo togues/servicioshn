@@ -11,7 +11,6 @@ ESP.herramienta = (function () {
     const el = document.createElement(tag);
     for (const k in (attrs || {})) {
       if (k === "class") el.className = attrs[k];
-      else if (k === "html") el.innerHTML = attrs[k];
       else if (k.startsWith("on")) el.addEventListener(k.slice(2), attrs[k]);
       else if (attrs[k] != null) el.setAttribute(k, attrs[k]);
     }
@@ -34,7 +33,7 @@ ESP.herramienta = (function () {
     try {
       const r = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(cuerpo), signal: ctrl.signal });
       let j = null;
-      try { j = await r.json(); } catch (e) { j = null; }
+      try { j = await r.json(); } catch { j = null; }
       const seg = Math.round((Date.now() - t0) / 1000);
       if (cfg.usarOrquestador && j && j.secciones && j.secciones[codigo]) j = j.secciones[codigo];
       if (!j || j.status === "error" || !r.ok) {
@@ -215,7 +214,7 @@ ESP.herramienta = (function () {
 
     const controles = [];
     const handle = { mapa, poner: anillo => mapa.poner(anillo), evaluacion: () => evaluacion, controles,
-      destruir() { hojaCtl.destruir(); controles.cancelado = true; controles.forEach(c => { try { c.abort(); } catch (e) { /* nada */ } }); mapa.destruir(); if (ESP.herramienta.activa === handle) ESP.herramienta.activa = null; } };
+      destruir() { hojaCtl.destruir(); controles.cancelado = true; controles.forEach(c => { try { c.abort(); } catch { /* nada */ } }); mapa.destruir(); if (ESP.herramienta.activa === handle) ESP.herramienta.activa = null; } };
     ESP.herramienta.activa = handle;   // para pruebas y para que el shell pueda centrar o cargar un polígono externo
     return handle;
   }

@@ -17,11 +17,11 @@ ESP.resultados = (function () {
         req.onupgradeneeded = () => { const d = req.result; if (!d.objectStoreNames.contains(TABLA)) d.createObjectStore(TABLA, { keyPath: "id" }).createIndex("fecha", "fecha"); };
         req.onsuccess = () => res(req.result);
         req.onerror = () => res(null); req.onblocked = () => res(null);
-      } catch (e) { res(null); }
+      } catch { res(null); }
     });
     return bdP;
   }
-  const tx = (d, modo, fn) => new Promise(res => { try { const t = d.transaction(TABLA, modo); const r = fn(t.objectStore(TABLA)); t.oncomplete = () => res(r && "result" in r ? r.result : true); t.onerror = () => res(null); t.onabort = () => res(null); } catch (e) { res(null); } });
+  const tx = (d, modo, fn) => new Promise(res => { try { const t = d.transaction(TABLA, modo); const r = fn(t.objectStore(TABLA)); t.oncomplete = () => res(r && "result" in r ? r.result : true); t.onerror = () => res(null); t.onabort = () => res(null); } catch { res(null); } });
   async function podar(d) {
     const todos = await tx(d, "readonly", s => s.getAll());
     if (!Array.isArray(todos) || todos.length <= MAX) return;
@@ -31,12 +31,12 @@ ESP.resultados = (function () {
   return {
     guardar(id, datos) {
       mem[id] = datos;
-      bd().then(d => { if (!d) { try { sessionStorage.setItem(clave(id), JSON.stringify(datos)); } catch (e) { /* sin sitio */ } return; } tx(d, "readwrite", s => s.put(datos)).then(() => podar(d)); });
+      bd().then(d => { if (!d) { try { sessionStorage.setItem(clave(id), JSON.stringify(datos)); } catch { /* sin sitio */ } return; } tx(d, "readwrite", s => s.put(datos)).then(() => podar(d)); });
     },
     // Lectura inmediata: solo lo que ya está en memoria (o en sessionStorage). Para IndexedDB use cargar().
     leer(id) {
       if (mem[id]) return mem[id];
-      try { const s = sessionStorage.getItem(clave(id)); if (s) { mem[id] = JSON.parse(s); return mem[id]; } } catch (e) { /* nada */ }
+      try { const s = sessionStorage.getItem(clave(id)); if (s) { mem[id] = JSON.parse(s); return mem[id]; } } catch { /* nada */ }
       return null;
     },
     async cargar(id) {
@@ -52,7 +52,7 @@ ESP.resultados = (function () {
       const todos = await tx(d, "readonly", s => s.getAll());
       return (Array.isArray(todos) ? todos : []).map(resumen).sort((a, b) => String(b.fecha).localeCompare(String(a.fecha)));
     },
-    async borrar(id) { delete mem[id]; const d = await bd(); if (d) await tx(d, "readwrite", s => s.delete(id)); try { sessionStorage.removeItem(clave(id)); } catch (e) { /* nada */ } },
+    async borrar(id) { delete mem[id]; const d = await bd(); if (d) await tx(d, "readwrite", s => s.delete(id)); try { sessionStorage.removeItem(clave(id)); } catch { /* nada */ } },
     nuevoId() { return Math.random().toString(36).slice(2, 8) + Date.now().toString(36).slice(-3); }
   };
   function resumen(x) { return { id: x.id, fecha: x.fecha, areaM2: x.areaM2, codigos: x.codigos || [], tarjetas: x.tarjetas || [] }; }
