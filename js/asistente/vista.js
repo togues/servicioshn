@@ -55,6 +55,7 @@ ESP.asistente.vista = (function () {
     }
 
     // ── Mapa (se crea al primer paso que lo necesita y se conserva) ──────────
+    let cartelera = null;
     let mapa = null, modo = "inicio", ev = estado.datos.evaluacion, restaurando = false;
     const esMovil = () => window.matchMedia("(max-width: 48rem)").matches;
     function asegurarMapa() {
@@ -201,6 +202,18 @@ ESP.asistente.vista = (function () {
     }
     function pasoRevisar() { const mp = asegurarMapa(); mp.centrar(); mp.invalidar(); pintarRevision(); }
 
+    // Paso 4: la cartelera. El pie dice cuántos hay elegidos y cuánto tardará; Siguiente se apaga sin nada elegido, y lo dice.
+    function pasoCartelera() {
+      const m = ta.cartelera;
+      const pintarPieCartelera = () => {
+        const r = estado.resumen(), n = r.tarjetas.length;
+        pintarPie(atras(3), [nota], boton(m.siguiente, () => ir(5), "btn-p as-principal", n ? {} : { disabled: true }));
+        nota.textContent = n ? (n === 1 ? m.elegido1 : m.elegidosN.replace("{n}", n)) + " · " + ESP.asistente.cartelera.tiempoTexto(r.segundos, m) : m.ninguno;
+      };
+      cartelera = ESP.asistente.cartelera.crear({ estado, alCambiar: pintarPieCartelera });
+      pantalla.append(cartelera.el); pintarPieCartelera();
+    }
+
     function pasoConstruccion() {
       pantalla.append(h("p", { class: "as-ayuda" }, ta.enConstruccion));
       pintarPie(atras(3));
@@ -208,12 +221,13 @@ ESP.asistente.vista = (function () {
 
     // ── Pintar un paso ───────────────────────────────────────────────────────
     function pintar(n) {
+      if (cartelera) { cartelera.cerrarFicha(); cartelera = null; }
       const p = estado.ir(n);
       if (String(p) !== String(n) && location.hash !== "#/analizar/" + p) history.replaceState(null, "", "#/analizar/" + p);   // corrige sin dejar rastro en el historial
       el.dataset.paso = p; pantalla.replaceChildren(); frase.textContent = ""; frase.classList.remove("as-frase-mala");
       if (mapa) { mapa.marcarVertice(-1); }
       pintarHitos(p);
-      ({ 0: pasoBienvenida, 1: pasoDonde, 2: pasoMarcar, 3: pasoRevisar }[p] || pasoConstruccion)();
+      ({ 0: pasoBienvenida, 1: pasoDonde, 2: pasoMarcar, 3: pasoRevisar, 4: pasoCartelera }[p] || pasoConstruccion)();
       document.title = t.asistente.hitos[estado.hito(p)] ? t.asistente.hitos[estado.hito(p)] + " · " + t.marca.nombre : t.marca.nombre;
       if (p !== 2 && mapa && mapa.dibujando()) mapa.borrar();
     }

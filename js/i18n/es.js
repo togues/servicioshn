@@ -293,6 +293,14 @@ ESP.i18n.es = {
       t: "Esta es su área de interés", arrastre: "Puede arrastrar las esquinas para ajustarla.", corregir: "Corregir", confirmar: "Confirmar área",
       falta: "Corrija el dibujo para continuar: {motivo}", medida: "Medida", sinCobertura: "Algunos datos no cubren esta zona."
     },
+    cartelera: {
+      t: "¿Qué quiere saber de esta área?", d: "Elija uno o varios. Toque «Ver más» para saber qué recibirá antes de decidir.",
+      disponibles: "Disponibles ahora", proximamente: "Próximamente", analisis1: "1 análisis", analisisN: "{n} análisis",
+      verMas: "Ver más", elegir: "Elegir este análisis", quitar: "Quitar de mi elección", cerrar: "Cerrar", elegida: "Elegida", noElegida: "Sin elegir",
+      elegir1: "Elegir {nombre}", elegido1: "1 elegido", elegidosN: "{n} elegidos", ninguno: "Elija al menos un análisis para continuar", siguiente: "Siguiente",
+      responde: "Qué responde", recibe: "Qué recibe", sirve: "Para qué sirve", tarda: "Cuánto tarda", noDice: "Lo que no dice", estimado: "Tiempo estimado; depende de cuánta área y de la hora.",
+      tiempo: { segundos: "unos {n} segundos", minuto: "cerca de 1 minuto", minutos: "unos {n} minutos" }, poster: "Imagen de ejemplo de este análisis"
+    },
     salir: { confirma: "Si sale ahora se pierde el dibujo.", salir: "Salir", quedarme: "Seguir aquí" }
   },
   guia: {

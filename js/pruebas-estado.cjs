@@ -63,6 +63,10 @@ e = nuevo(true); dibujar(e); e.ponerDesde("2026-01-15"); e.alternarTarjeta("ries
 igual(e.resumen().desde, null, "fecha sin tarjeta de vigilancia no cuenta"); e.alternarTarjeta("construccion"); igual(e.resumen().desde, "2026-01-15", "fecha con su tarjeta");
 e.alternarTarjeta("predio"); const r = e.resumen(); igual(new Set(r.codigos).size, r.codigos.length, "una API compartida se llama una sola vez");
 e.ponerDesde("15/01/2026"); igual(e.datos.desde, "", "fecha mal escrita se descarta");
+const inf = e.info("identificacion"); igual(inf.analisis, 1, "identificación incluye 1 análisis"); igual(inf.segundos, 20, "identificación ≈ 20 s");
+igual(e.info("riesgo").analisis, 5, "riesgo incluye los 5 que corren hoy"); igual(e.info("riesgo").segundos, 113, "riesgo: 5 de 90 s en 4 a la vez");
+igual(e.info("aptitud").analisis, 0, "aptitud sin servicios"); igual(e.info("aptitud").segundos, 0, "aptitud sin tiempo");
+igual(nuevo(true).resumen().segundos, 0, "sin elegir no hay tiempo");
 igual(e.hito(3), "area", "hito del 3"); igual(e.hito(4), "analisis", "hito del 4"); igual(e.hito(6), "resultado", "hito del 6"); igual(e.hito(0), null, "la bienvenida no tiene hito");
 
 console.log(fallas.length ? "FALLAS:\n" + fallas.join("\n") : "TODO OK");

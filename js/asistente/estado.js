@@ -2,7 +2,7 @@
    y por eso se prueba en Node (js/pruebas-estado.cjs). La vista de los pasos solo pinta desde este objeto; ir atrás
    nunca pierde nada porque nada vive en el DOM.
 
-   ESP.asistente.estado.crear({ catalogo, vioBienvenida }) → objeto con:
+   ESP.asistente.estado.crear({ catalogo, vioBienvenida, simultaneas }) → objeto con:
      datos            { paso, anillo, evaluacion, terminado, tarjetas[], desde, lugar, vioBienvenida, puedeAnalizar }
      entrada(n)       true si el paso n admite entrar con lo que hay
      corregir(n)      el paso al que realmente corresponde ir al pedir el n (el primero que falta); n no entero → inicial
@@ -11,7 +11,8 @@
      reabrirDibujo()  Corregir: el dibujo sigue intacto pero vuelve a ser editable (terminado = false)
      borrarDibujo()   Empezar de nuevo: único gesto que destruye trabajo
      alternarTarjeta(id) / ponerDesde(texto) / ponerLugar(texto)
-     resumen()        { codigos[], servicios, tarjetas[], desde } para el paso 5 y para llamar()
+     resumen()        { codigos[], servicios, segundos, tarjetas[], desde } para el paso 5 y para llamar()
+     info(id)         { analisis, segundos } de una tarjeta, para la cartelera; usaDesde() dice si «Cambios desde» cuenta
      autorizarAnalisis() / consumirAnalisis()   el 6 solo se entra desde el botón «Analizar ahora»
      hayAlgoQuePerder()   Salir y beforeunload preguntan solo si esto es true
      reiniciar()      asistente limpio (Nuevo análisis desde el atlas) */
@@ -73,10 +74,19 @@ ESP.asistente.estado = (function () {
     const ponerDesde = t => { d.desde = /^\d{4}-\d{2}-\d{2}$/.test(t || "") ? t : ""; };
     const ponerLugar = t => { d.lugar = String(t || "").trim(); };
 
+    // Tiempo estimado de un grupo de servicios: corren de a N a la vez, así que no es la suma ni el más lento solo.
+    const seg = c => (cat.apis[c] && cat.apis[c].seg) || 0;
+    function segundosDe(codigos) {
+      if (!codigos.length) return 0;
+      const n = o.simultaneas || 4;
+      return Math.max(Math.max(...codigos.map(seg)), Math.ceil(codigos.reduce((s, c) => s + seg(c), 0) / n));
+    }
+    // Para la cartelera: cuántos análisis incluye una tarjeta (solo los que hoy corren) y cuánto tarda.
+    function info(id) { const codigos = cat.apisDe([id]).filter(c => cat.disponible(c)); return { analisis: codigos.length, segundos: segundosDe(codigos) }; }
     function resumen() {
       const ids = elegidas();
       const codigos = cat.apisDe(ids).filter(c => cat.disponible(c));
-      return { tarjetas: ids, codigos, servicios: codigos.length, desde: usaDesde() && d.desde ? d.desde : null };
+      return { tarjetas: ids, codigos, servicios: codigos.length, segundos: segundosDe(codigos), desde: usaDesde() && d.desde ? d.desde : null };
     }
     const autorizarAnalisis = () => { d.puedeAnalizar = true; };
     const consumirAnalisis = () => { const v = d.puedeAnalizar; d.puedeAnalizar = false; return v; };
@@ -86,7 +96,7 @@ ESP.asistente.estado = (function () {
     return {
       get datos() { return d; }, PASOS, hito: n => HITOS[n] || null,
       entrada, corregir, ir, ponerDibujo, reabrirDibujo, borrarDibujo, alternarTarjeta, ponerDesde, ponerLugar,
-      resumen, autorizarAnalisis, consumirAnalisis, hayAlgoQuePerder, reiniciar, areaValida, elegidas,
+      resumen, info, usaDesde, autorizarAnalisis, consumirAnalisis, hayAlgoQuePerder, reiniciar, areaValida, elegidas,
       marcarBienvenida() { d.vioBienvenida = true; }
     };
   }
