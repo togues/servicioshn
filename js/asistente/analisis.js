@@ -34,13 +34,13 @@ ESP.asistente.analisis = (function () {
       if (!analisis) return;
       analisis.activo = false; analisis.controles.cancelado = true;
       analisis.controles.forEach(c => { try { c.abort(); } catch { /* ya terminó */ } });
-      clearInterval(analisis.rotor); analisis = null;
+      clearInterval(analisis.rotor); if (analisis.pixeles) analisis.pixeles.destruir(); analisis = null;
     }
     function pasoAnalizando() {
       const m = ta.analizando, tp = t.herramienta.progreso, r = estado.resumen(), d = estado.datos;
       estado.consumirAnalisis();
       const mp = mapa(); mp.centrar(false); mp.invalidar();
-      const corrida = analisis = { activo: true, controles: [], rotor: null };
+      const corrida = analisis = { activo: true, controles: [], rotor: null, pixeles: ESP.asistente.movimiento.pixeles(mp, d.anillo) };
       const filas = {}; let hechos = 0;
       const barra = h("div", { class: "as-barra-av", role: "progressbar", "aria-valuemin": "0", "aria-valuemax": String(r.codigos.length), "aria-valuenow": "0", "aria-label": m.t }, h("span", {}));
       const avance = h("p", { class: "as-avance", role: "status", "aria-live": "polite" }, m.avance.replace("{n}", 0).replace("{m}", r.codigos.length));
@@ -61,6 +61,7 @@ ESP.asistente.analisis = (function () {
         li.querySelector(".as-prog-e").textContent = (est === "corriendo" ? tp.corriendo.replace("{s}", seg) : (tp[est] || est)) + (motivo ? " · " + motivo : "");
         if (est === "listo" || est === "error" || est === "parcial") {
           hechos = Object.values(filas).filter(x => /as-prog-(listo|error|parcial)/.test(x.className)).length;
+          corrida.pixeles.avance(hechos / r.codigos.length, r.codigos.length);
           barra.setAttribute("aria-valuenow", String(hechos)); barra.firstChild.style.width = Math.round(hechos / r.codigos.length * 100) + "%";
           avance.textContent = m.avance.replace("{n}", hechos).replace("{m}", r.codigos.length);
         }
@@ -72,14 +73,15 @@ ESP.asistente.analisis = (function () {
         clearInterval(corrida.rotor);
         const bien = Object.values(resultados).filter(x => x.estado !== "error");
         if (!bien.length) {                                  // fallaron todos: se queda aquí con el error y puede reintentar
-          error.hidden = false; analisis = null;
+          error.hidden = false; corrida.pixeles.destruir(); analisis = null;
           pintarPie(atras(5), [nota], boton(m.reintentar, () => { estado.autorizarAnalisis(); repintar(6); }, "btn-p as-principal"));
           return;
         }
         const id = ESP.resultados.nuevoId();
         ESP.resultados.guardar(id, { id, fecha: inicio.toISOString(), aoi, areaM2: d.evaluacion.m2, varas2: d.evaluacion.varas2, ha: d.evaluacion.ha, tarjetas: r.tarjetas, codigos: r.codigos, desde: r.desde, resultados });
-        avance.textContent = m.entrando; analisis = null;
-        reiniciar(); location.hash = "#/informe/" + id + "/0";   // el flujo termina: un nuevo análisis abre un asistente limpio
+        avance.textContent = m.entrando; corrida.pixeles.avance(1);
+        // Un instante con el área encendida antes de abrir el atlas; con movimiento reducido, de una vez.
+        setTimeout(() => { if (!corrida.activo) return; corrida.pixeles.destruir(); analisis = null; reiniciar(); location.hash = "#/informe/" + id + "/0"; }, ESP.asistente.movimiento.reducido() ? 0 : 1000);   // el flujo termina: un nuevo análisis abre un asistente limpio
       });
     }
 

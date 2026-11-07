@@ -55,7 +55,7 @@ ESP.asistente.vista = (function () {
     }
 
     // ── Mapa (se crea al primer paso que lo necesita y se conserva) ──────────
-    let cartelera = null, paso56 = null;
+    let cartelera = null, paso56 = null, relieve = null;
     let mapa = null, modo = "inicio", ev = estado.datos.evaluacion, restaurando = false;
     const esMovil = () => window.matchMedia("(max-width: 48rem)").matches;
     function asegurarMapa() {
@@ -132,15 +132,13 @@ ESP.asistente.vista = (function () {
     // ── Pasos ────────────────────────────────────────────────────────────────
     function pasoBienvenida() {
       const b = ta.bienvenida;
-      const url = (ESP.config.mapa.satelite || "");
       const fondo = h("div", { class: "as-fondo", "aria-hidden": "true" });
-      if (url) for (let y = 7542; y <= 7544; y++) for (let x = 4228; x <= 4231; x++)
-        fondo.append(h("img", { src: url.replace("{z}", 14).replace("{y}", y).replace("{x}", x), alt: "", loading: "lazy", decoding: "async" }));
       pantalla.append(fondo, h("div", { class: "as-bv" },
         h("img", { class: "as-bv-logo", src: "img/logo-oscuro.png", alt: t.marca.nombre, width: 180, height: 85 }), h("p", { class: "as-bv-et" }, b.etiqueta), h("h1", {}, b.titulo), h("p", { class: "as-bv-tx" }, b.texto),
         h("ol", { class: "as-bv-pasos" }, b.pasos.map((p, i) => h("li", {}, h("b", {}, String(i + 1)), h("span", {}, h("strong", {}, p.t), p.d)))),
         h("p", { class: "as-bv-tarda" }, b.tarda),
         boton(b.empezar, () => { guardado.poner(); estado.marcarBienvenida(); ir(1); }, "btn-p btn-g as-empezar")));
+      relieve = ESP.asistente.movimiento.relieve(fondo);          // se detiene al salir del paso 0
       pintarPie();
     }
 
@@ -217,10 +215,20 @@ ESP.asistente.vista = (function () {
     // Pasos 5 y 6 viven en js/asistente/analisis.js; se arman la primera vez que hacen falta.
     const pasos56 = () => paso56 || (paso56 = ESP.asistente.analisis.crear({ estado, pantalla, nota, boton, atras, pintarPie, ir, mapa: asegurarMapa, repintar: n => pintar(n), reiniciar: reiniciarSesion }));
 
+    // Entrada suave de cada pantalla: la bienvenida sube por piezas, la cartelera entra tarjeta a tarjeta, el área se dibuja como con lápiz.
+    function entrada(p) {
+      const M = ESP.asistente.movimiento;
+      if (p === 0) M.entrar(pantalla.querySelector(".as-bv"), { y: 18, escalonado: .09, duracion: .55 });
+      else if (p === 4) M.entrar(pantalla, { hijos: ".as-cartelera > h2, .as-cartelera > p, .as-card", escala: .96, y: 10, escalonado: .04 });
+      else M.entrar(pantalla);
+      if (p === 3) setTimeout(() => M.trazar(document.querySelector(".as-mapa path.leaflet-interactive")), 350);
+    }
+
     // ── Pintar un paso ───────────────────────────────────────────────────────
     function pintar(n) {
       if (cartelera) { cartelera.cerrarFicha(); cartelera = null; }
       if (paso56) paso56.cancelar();                        // salir del paso 6 por cualquier camino cancela las llamadas
+      if (relieve) { relieve.destruir(); relieve = null; }
       const p = estado.ir(n);
       if (String(p) !== String(n) && location.hash !== "#/analizar/" + p) history.replaceState(null, "", "#/analizar/" + p);   // corrige sin dejar rastro en el historial
       el.dataset.paso = p; pantalla.replaceChildren(); frase.textContent = ""; frase.classList.remove("as-frase-mala");
@@ -230,6 +238,7 @@ ESP.asistente.vista = (function () {
       document.title = t.asistente.hitos[estado.hito(p)] ? t.asistente.hitos[estado.hito(p)] + " · " + t.marca.nombre : t.marca.nombre;
       if (p !== 2 && mapa && mapa.dibujando()) mapa.borrar();
       if (mapa) mapa.editable(p === 2 || p === 3);          // en 5 y 6 el polígono queda quieto
+      entrada(p);
     }
     pintar(paso);
 
@@ -237,7 +246,7 @@ ESP.asistente.vista = (function () {
       ruta: "analizar", asistente: true,
       irA(n) { pintar(n); },
       mapa: () => mapa,                                   // para las pruebas y para quien necesite centrar o consultar el mapa
-      destruir() { if (paso56) paso56.cancelar(); window.removeEventListener("beforeunload", alCerrar); if (mapa) mapa.destruir(); }
+      destruir() { if (paso56) paso56.cancelar(); if (relieve) relieve.destruir(); window.removeEventListener("beforeunload", alCerrar); if (mapa) mapa.destruir(); }
     };
   }
   return { crear, sesion, reiniciarSesion };

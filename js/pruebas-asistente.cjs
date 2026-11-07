@@ -175,6 +175,21 @@ const foto = (p, n, w, tema) => p.screenshot({ path: `capturas/asistente-${n}-${
     igual(an.barrido, "none", "con movimiento reducido el barrido del mapa no debía animarse"); igual(an.giro, "none", "con movimiento reducido el indicador no debía girar");
     igual(an.barra, "0s", "con movimiento reducido la barra no debía hacer transición"); await p.close(); }
 
+
+  // ── 12 · Movimiento: la bienvenida anima y se detiene al salir; con movimiento reducido no hay bucles ─
+  { const { p } = await C.abrir(b, { vioBienvenida: false, latencia: 2500 }); await p.goto(C.URL + "#/analizar/0"); await p.waitForTimeout(700);
+    quiero(await p.$(".as-relieve"), "la bienvenida debía dibujar el relieve"); igual(await p.evaluate(() => ESP.asistente.movimiento.activos()), 1, "la bienvenida debía tener un bucle de animación");
+    await p.click(".as-empezar"); await p.waitForTimeout(400); igual(await p.evaluate(() => ESP.asistente.movimiento.activos()), 0, "al salir de la bienvenida el bucle debía detenerse");
+    await C.alPasoDos(p); await C.marcar(p); await p.click("[data-terminar]"); await p.waitForTimeout(500); await C.elegir(p, ["identificacion"]); await p.click(".as-principal"); await p.waitForTimeout(300);
+    await p.click(".as-analizar"); await p.waitForTimeout(900);
+    quiero(await p.$(".as-pixeles"), "el paso 6 debía poner los píxeles sobre el área"); igual(await p.evaluate(() => ESP.asistente.movimiento.activos()), 1, "el paso 6 debía tener su bucle");
+    await p.click(".as-atras"); await p.waitForTimeout(500);
+    quiero(!(await p.$(".as-pixeles")), "al volver atrás los píxeles debían quitarse"); igual(await p.evaluate(() => ESP.asistente.movimiento.activos()), 0, "al volver atrás no debía quedar ningún bucle vivo");
+    await p.close(); }
+  { const { p } = await C.abrir(b, { vioBienvenida: false, reducido: true }); await p.goto(C.URL + "#/analizar/0"); await p.waitForTimeout(600);
+    quiero(await p.$(".as-relieve"), "con movimiento reducido el relieve debía dibujarse fijo"); igual(await p.evaluate(() => ESP.asistente.movimiento.activos()), 0, "con movimiento reducido no debía haber bucles");
+    await p.close(); }
+
   await b.close();
   console.log(fallas.length ? "FALLAS:\n" + fallas.join("\n") : "TODO OK");
   process.exit(fallas.length ? 1 : 0);
