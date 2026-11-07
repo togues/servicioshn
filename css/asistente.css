@@ -66,7 +66,7 @@ body.en-asistente { overscroll-behavior-y: contain; }
 .as-buscar.ocupado { opacity: .6; }
 .as-aviso { color: var(--bad); font-size: var(--fs-1); }
 .as-ubic { align-self: flex-start; }
-.as-retomar a { display: flex; align-items: center; gap: var(--s3); padding: var(--s3); border: 1px solid var(--accent); border-radius: var(--r); background: var(--accent-wash); color: var(--accent-ink); text-decoration: none; }
+.as-retomar a { display: flex; align-items: center; gap: var(--s3); padding: var(--s3); border: 1px solid var(--accent); border-radius: var(--r); background: var(--accent-wash); color: var(--ink); text-decoration: none; }
 .as-retomar b, .as-retomar small { display: block; }
 .as-retomar small { font-size: var(--fs-0); }
 .as-retomar[hidden] { display: none; }
@@ -79,6 +79,7 @@ body.en-asistente { overscroll-behavior-y: contain; }
 .as-estado-aviso { background: var(--warn-wash); color: var(--warn); }
 .as-estado-invalido, .as-estado-vacio { background: var(--bad-wash); color: var(--bad); }
 .as-estado .ms { font-size: 20px; flex: none; }
+.as-estado[hidden] { display: none; }   /* un display explícito le gana al atributo hidden del navegador */
 .as-ayuda { font-size: var(--fs-1); }
 
 /* Confirmación */
@@ -97,7 +98,7 @@ body.en-asistente { overscroll-behavior-y: contain; }
   .as-sin-hitos .as-hitos { display: none; }
   .as-cuerpo { display: block; }
   .as-mapa { position: absolute; inset: 0; }
-  .as[data-paso="1"] .as-pantalla, .as[data-paso="3"] .as-pantalla { position: absolute; left: 0; right: 0; bottom: 0; z-index: 1100; max-height: 62%; border: 0; border-radius: var(--r-lg) var(--r-lg) 0 0; box-shadow: var(--sh-lg); padding: var(--s4); }
+  .as[data-paso="1"] .as-pantalla, .as[data-paso="3"] .as-pantalla, .as[data-paso="5"] .as-pantalla, .as[data-paso="6"] .as-pantalla { position: absolute; left: 0; right: 0; bottom: 0; z-index: 1100; max-height: 62%; border: 0; border-radius: var(--r-lg) var(--r-lg) 0 0; box-shadow: var(--sh-lg); padding: var(--s4); }
   .as[data-paso="0"] .as-pantalla, .as[data-paso="4"] .as-pantalla { position: absolute; inset: 0; }
   .as-pantalla h2 { font-size: var(--fs-3); }
   .as-bv h1 { font-size: var(--fs-5); }
@@ -154,4 +155,31 @@ body.en-asistente { overscroll-behavior-y: contain; }
   .as-card { flex: 0 0 min(10.5rem, 58%); scroll-snap-align: start; }
   .as-ficha > header { grid-template-columns: 6rem minmax(0, 1fr); }
 }
-@media (prefers-reduced-motion: reduce) { .as * { animation: none !important; transition: none !important; } }
+
+/* Paso 5 · listo y paso 6 · analizando: el mapa con el área a un lado, el panel del paso al otro */
+.as-resumen-f { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--s3); padding-block: var(--s3); border-top: 1px solid var(--line); }
+.as-resumen-f > div { display: flex; flex-direction: column; gap: var(--s1); min-width: 0; color: var(--ink); }
+.as-resumen-f small { font: 700 var(--fs-0)/1.3 var(--font-display); color: var(--ink-muted); text-transform: uppercase; letter-spacing: .06em; }
+.as-resumen-f b { font-size: var(--fs-3); }
+.as-resumen-l { margin: 0; padding-left: var(--s4); display: flex; flex-direction: column; gap: 2px; }
+.as-cambiar { min-height: 36px; padding: 4px 12px; font-size: var(--fs-1); flex: none; }
+.as-analizar { min-width: 12rem; min-height: 52px; font-size: var(--fs-3); }
+.as-barra-av { height: 10px; border-radius: 999px; background: var(--next-wash); overflow: hidden; }
+.as-barra-av span { display: block; height: 100%; width: 0; border-radius: inherit; background: var(--accent); transition: width .4s ease; }
+.as-avance { font-weight: 600; color: var(--ink); }
+.as-prog { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.as-prog li { display: grid; grid-template-columns: 20px minmax(0, 1fr) auto; align-items: center; gap: var(--s2); padding: var(--s2) 0; border-top: 1px solid var(--line); font-size: var(--fs-1); color: var(--ink); }
+.as-prog li:first-child { border-top: 0; }
+.as-prog-p { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--line-strong); }
+.as-prog-e { color: var(--ink-muted); font-size: var(--fs-0); text-align: right; white-space: nowrap; }
+.as-prog-error .as-prog-e { grid-column: 2 / -1; text-align: left; white-space: normal; }
+.as-prog-corriendo .as-prog-p { border-color: var(--accent); border-right-color: transparent; animation: as-gira .9s linear infinite; }
+.as-prog-listo .as-prog-p, .as-prog-parcial .as-prog-p { border-color: var(--ok); background: var(--ok); }
+.as-prog-listo .as-prog-e { color: var(--ok); }
+.as-prog-error .as-prog-p { border-color: var(--ink-faint); background: var(--ink-faint); }
+.as-curioso { padding: var(--s3); border-radius: var(--r); background: var(--accent-wash); color: var(--ink); font-size: var(--fs-1); }
+@keyframes as-gira { to { transform: rotate(360deg); } }
+/* Barrido suave sobre el área mientras se consulta */
+.as[data-paso="6"] .as-mapa::after { content: ""; position: absolute; inset: 0; z-index: 500; pointer-events: none; background: linear-gradient(100deg, transparent 35%, color-mix(in srgb, var(--accent) 28%, transparent) 50%, transparent 65%); background-size: 250% 100%; animation: as-barrido 2.8s ease-in-out infinite; }
+@keyframes as-barrido { from { background-position: 130% 0; } to { background-position: -30% 0; } }
+@media (prefers-reduced-motion: reduce) { .as *, .as-mapa::after { animation: none !important; transition: none !important; } }

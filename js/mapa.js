@@ -141,8 +141,10 @@ ESP.mapa = (function () {
         avisar();
         this.centrar();
       },
+      // Con el polígono bloqueado (pasos de resumen y de análisis) no se pueden mover esquinas por accidente.
+      editable(si) { if (poligono && poligono.pm) { if (si) poligono.pm.enable({ allowSelfIntersection: true }); else poligono.pm.disable(); } },
       coordenadas() { return coords.slice(); },
-      centrar() { if (poligono) map.fitBounds(poligono.getBounds(), { paddingTopLeft: [40, 40], paddingBottomRight: [40, 40 + (op.cubierto ? op.cubierto() : 0)] }); },   // lo que tapa la hoja o el panel de abajo no cuenta como mapa visible
+      centrar(animar) { if (poligono) map.fitBounds(poligono.getBounds(), { animate: animar !== false, paddingTopLeft: [40, 40], paddingBottomRight: [40, 40 + (op.cubierto ? op.cubierto() : 0)] }); },   // lo que tapa la hoja o el panel de abajo no cuenta como mapa visible
       marcarVertice(i) {
         if (culpable) { culpable.remove(); culpable = null; }
         if (i < 0 || !coords[i]) return;
@@ -174,8 +176,9 @@ ESP.mapa = (function () {
           return { ok: true, lat: +j[0].lat, lon: +j[0].lon, nombre: j[0].display_name };
         } catch (e) { return { ok: false, error: e }; }
       },
-      invalidar() { setTimeout(() => map.invalidateSize(), 50); },
-      destruir() { map.remove(); }
+      // El temporizador se cancela al destruir: un invalidateSize sobre un mapa ya quitado lanza «_leaflet_pos».
+      invalidar() { clearTimeout(api.temporizador); api.temporizador = setTimeout(() => map.invalidateSize(), 50); },
+      destruir() { clearTimeout(api.temporizador); map.remove(); }
     };
     ubic.alIniciar(() => coords.length > 0);     // al abrir, si la persona lo permite, el mapa la lleva a donde está
     return api;

@@ -271,7 +271,7 @@ ESP.i18n.es = {
   },
   asistente: {
     hitos: { area: "Área", analisis: "Análisis", resultado: "Resultado" }, salirBoton: "Salir", atras: "Atrás", logo: "Espacial HN, inicio",
-    pasoDe: "Paso {n} de 3", enConstruccion: "Este paso se está construyendo. Puede volver atrás sin perder su área.",
+    pasoDe: "Paso {n} de 3",
     bienvenida: {
       etiqueta: "Espacial HN · Inteligencia territorial", titulo: "Lo que los satélites han visto de un lugar, en tres pasos.",
       texto: "Usted marca un área en el mapa, elige qué quiere saber y recibe un atlas con evidencia de fechas y fuente.",
@@ -300,6 +300,16 @@ ESP.i18n.es = {
       elegir1: "Elegir {nombre}", elegido1: "1 elegido", elegidosN: "{n} elegidos", ninguno: "Elija al menos un análisis para continuar", siguiente: "Siguiente",
       responde: "Qué responde", recibe: "Qué recibe", sirve: "Para qué sirve", tarda: "Cuánto tarda", noDice: "Lo que no dice", estimado: "Tiempo estimado; depende de cuánta área y de la hora.",
       tiempo: { segundos: "unos {n} segundos", minuto: "cerca de 1 minuto", minutos: "unos {n} minutos" }, poster: "Imagen de ejemplo de este análisis"
+    },
+    listo: {
+      t: "Todo listo", area: "Área", analisis: "Análisis", cambiar: "cambiar", lugar: "cerca de {lugar}",
+      servicio1: "1 servicio satelital", serviciosN: "{n} servicios satelitales", tarda: "Tarda {tiempo}.", desde: "Cambios desde {fecha}",
+      boton: "Analizar ahora", cambiarArea: "Cambiar el área", cambiarAnalisis: "Cambiar los análisis"
+    },
+    analizando: {
+      t: "Consultando los satélites…", avance: "{n} de {m} terminados", sabia: "¿Sabía que…?", atras: "Si vuelve atrás, el análisis se cancela.",
+      reintentar: "Reintentar", aviso: "Algunos servicios no respondieron; el atlas se abre con lo que sí llegó.", entrando: "Abriendo su atlas…",
+      curiosos: ["Landsat fotografía Honduras desde 1984.", "El radar Sentinel-1 ve a través de las nubes.", "Sentinel-2 pasa por el mismo lugar cada 5 días.", "Los datos de lluvia CHIRPS empiezan en 1981."]
     },
     salir: { confirma: "Si sale ahora se pierde el dibujo.", salir: "Salir", quedarme: "Seguir aquí" }
   },
