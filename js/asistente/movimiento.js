@@ -70,7 +70,7 @@ ESP.asistente.movimiento = (function () {
   function pixeles(mp, anillo) {
     const map = mp.map, host = map.getContainer(), { c, ctx, ajustar } = lienzo(host);
     c.className = "as-pixeles";
-    const L = { luz: token("--accent", "#f2a516"), frio: token("--prisma-300", "#82cbdc") };
+    const L = { luz: token("--prisma-100", "#c5ecf2"), frio: token("--prisma-300", "#82cbdc") };   // celdas claras: se leen sobre el satélite y no inventan significado
     let w = 0, h = 0, pts = [], lado = 12, cel = [], f = 0, meta = 0, creep = 0, parar = () => {};
     const geometria = () => {
       [w, h] = ajustar(); pts = anillo.map(p => map.latLngToContainerPoint([p[1], p[0]]));

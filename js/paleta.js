@@ -2,7 +2,7 @@
    usan estas funciones; nunca un hex suelto. Legible sobre satélite y sobre calles. */
 window.ESP = window.ESP || {};
 ESP.paleta = {
-  marca: "#185c7d", acento: "#f2a516", neutro: "#9ca3af", tinta: "#111417",
+  marca: "#185c7d", acento: "#c5ecf2",   /* acento: el contorno del área de interés, claro para leerse sobre el satélite (prisma-100) */ neutro: "#9ca3af", tinta: "#111417",
   agua: "#1d4ed8", aguaSuave: "#93c5fd", fuego: "#b91c1c", fuegoSuave: "#fca5a5", suelo: "#b45309", vegetacion: "#15803d",
   ok: "#1f7a4d", aviso: "#b7791f", malo: "#a23b2a",
   // 2 a 9 clases ordenadas (claro → oscuro), para años o intensidades

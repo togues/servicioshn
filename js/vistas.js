@@ -34,15 +34,14 @@ window.ESP = window.ESP || {}; ESP.vistas = ESP.vistas || {};
       </div>
       <div class="hero-v" aria-hidden="true">
         <svg viewBox="0 0 420 300" class="hero-svg">
-          <defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1b3a2a"/><stop offset=".5" stop-color="#2f5d3b"/><stop offset="1" stop-color="#6b7a4a"/></linearGradient>
-          <pattern id="cal" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M0 14h28M14 0v28" stroke="rgba(255,255,255,.08)" stroke-width="1"/></pattern></defs>
-          <rect width="420" height="300" rx="14" fill="url(#g1)"/><rect width="420" height="300" rx="14" fill="url(#cal)"/>
-          <path d="M40 220 C120 200 150 120 260 110 S380 60 400 40" stroke="rgba(255,255,255,.35)" stroke-width="6" fill="none"/>
-          <g fill="#dfe7dc" opacity=".9"><rect x="70" y="90" width="26" height="18" rx="2" transform="rotate(-12 83 99)"/><rect x="110" y="70" width="22" height="16" rx="2" transform="rotate(-12 121 78)"/><rect x="150" y="150" width="30" height="20" rx="2" transform="rotate(-12 165 160)"/><rect x="300" y="170" width="34" height="22" rx="2" transform="rotate(8 317 181)"/><rect x="250" y="210" width="24" height="16" rx="2" transform="rotate(8 262 218)"/><rect x="330" y="120" width="20" height="14" rx="2"/></g>
-          <polygon points="190,80 300,70 320,180 230,230 170,170" fill="rgba(242,165,22,.18)" stroke="#f2a516" stroke-width="3" stroke-linejoin="round"/>
-          <g fill="#f2a516"><circle cx="190" cy="80" r="5"/><circle cx="300" cy="70" r="5"/><circle cx="320" cy="180" r="5"/><circle cx="230" cy="230" r="5"/><circle cx="170" cy="170" r="5"/></g>
-          <g transform="translate(24 24)"><rect width="150" height="54" rx="8" fill="rgba(255,255,255,.94)"/><text x="12" y="22" font-size="11" fill="#4d5b63" font-family="Open Sans, sans-serif">${esc(t().hero.etiqueta)}</text><text x="12" y="42" font-size="16" font-weight="700" fill="#111417" font-family="Open Sans, sans-serif">${esc(t().hero.area)}</text></g>
-          <g transform="translate(246 236)"><rect width="150" height="44" rx="8" fill="rgba(255,255,255,.94)"/><circle cx="16" cy="22" r="6" fill="#1f7a4d"/><text x="30" y="26" font-size="12" fill="#111417" font-family="Open Sans, sans-serif">${esc(t().hero.techo)}</text></g>
+          <defs><pattern id="cal" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M0 14h28M14 0v28" class="rejilla-m"/></pattern></defs>
+          <rect width="420" height="300" rx="14" class="fondo"/><rect width="420" height="300" rx="14" fill="url(#cal)"/>
+          <path d="M40 220 C120 200 150 120 260 110 S380 60 400 40" class="rio"/>
+          <g class="techo"><rect x="70" y="90" width="26" height="18" rx="2" transform="rotate(-12 83 99)"/><rect x="110" y="70" width="22" height="16" rx="2" transform="rotate(-12 121 78)"/><rect x="150" y="150" width="30" height="20" rx="2" transform="rotate(-12 165 160)"/><rect x="300" y="170" width="34" height="22" rx="2" transform="rotate(8 317 181)"/><rect x="250" y="210" width="24" height="16" rx="2" transform="rotate(8 262 218)"/><rect x="330" y="120" width="20" height="14" rx="2"/></g>
+          <polygon points="190,80 300,70 320,180 230,230 170,170" class="area"/>
+          <g class="vertice"><circle cx="190" cy="80" r="5"/><circle cx="300" cy="70" r="5"/><circle cx="320" cy="180" r="5"/><circle cx="230" cy="230" r="5"/><circle cx="170" cy="170" r="5"/></g>
+          <g transform="translate(24 24)"><rect width="150" height="54" rx="8" class="rotulo"/><text x="12" y="22" font-size="11" class="rotulo-t" font-family="Open Sans, sans-serif">${esc(t().hero.etiqueta)}</text><text x="12" y="42" font-size="16" font-weight="700" class="rotulo-v" font-family="Open Sans, sans-serif">${esc(t().hero.area)}</text></g>
+          <g transform="translate(246 236)"><rect width="150" height="44" rx="8" class="rotulo"/><circle cx="16" cy="22" r="6" class="punto"/><text x="30" y="26" font-size="12" class="rotulo-v" font-family="Open Sans, sans-serif">${esc(t().hero.techo)}</text></g>
         </svg>
       </div>
     </section>

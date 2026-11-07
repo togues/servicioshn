@@ -193,7 +193,7 @@ body.en-atlas .pie { display: none; }
 .at-nav { display: inline-flex; align-items: center; gap: 2px; height: 40px; padding: 0 var(--s3); border-radius: 999px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink); font: inherit; font-weight: 600; font-size: var(--fs-1); cursor: pointer; white-space: nowrap; transition: background .12s; }
 .at-nav:hover:not(:disabled) { background: var(--brand-wash); }
 .at-nav:disabled { opacity: .35; cursor: default; }
-.at-nav-sig { background: var(--brand); border-color: var(--brand); color: var(--on-brand); padding: 0 var(--s3) 0 var(--s4); }
+.at-nav-sig { background: var(--boton); border-color: var(--boton); color: var(--on-boton); padding: 0 var(--s3) 0 var(--s4); }
 .at-nav-sig:hover:not(:disabled) { background: var(--prisma-700); border-color: var(--prisma-700); color: #fff; }
 .at-nav .ms { font-size: 22px; }
 .btn-lg { padding: var(--s3) var(--s5); font-size: var(--fs-2); }
