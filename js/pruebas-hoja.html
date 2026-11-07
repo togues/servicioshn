@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pruebas · hoja inferior (sin red)</title>
+<style>
+  /* Plantilla mínima del componente (la misma de la skill hoja-inferior-movil); solo para esta prueba. */
+  *, *::before, *::after { box-sizing: border-box; }   /* el componente fija la altura en px: con content-box el relleno la haría crecer */
+  html, body { margin: 0; height: 100%; overscroll-behavior-y: contain; }
+  #marco { position: relative; height: 100vh; height: 100dvh; background: #dde; }
+  #hoja { position: absolute; left: 0; right: 0; bottom: 0; z-index: 10; height: 58%; max-height: 100%; background: #fff; border-radius: 16px 16px 0 0; padding: 0 16px 16px; overflow: auto; overscroll-behavior: contain; transition: height .28s cubic-bezier(.2,.8,.2,1); }
+  #hoja:not(.abierta) { padding-bottom: 0; overflow: hidden; }
+  #asa { display: block; position: sticky; top: 0; z-index: 3; width: 100%; min-height: 44px; border: 0; background: #fff; touch-action: none; cursor: pointer; }
+  #asa::before { content: ""; display: block; width: 44px; height: 5px; border-radius: 3px; background: #999; margin: 0 auto; }
+  p { margin: 0 0 24px; }
+</style></head><body>
+<div id="marco"><div id="hoja"><button id="asa" type="button" aria-expanded="true" aria-label="Mostrar u ocultar"></button>
+  <div id="contenido"><button id="btn" type="button">Un botón dentro de la hoja</button><div id="largo"></div></div></div></div>
+<script src="componentes/hoja.js"></script>
+<script>
+  document.getElementById("largo").innerHTML = Array.from({ length: 30 }, (_, i) => "<p>Párrafo " + (i + 1) + ": contenido largo para que la hoja tenga desplazamiento interno.</p>").join("");
+  window.__clics = 0; document.getElementById("btn").addEventListener("click", () => { window.__clics++; });
+  window.__hoja = ESP.hoja.crear({ hoja: document.getElementById("hoja"), asa: document.getElementById("asa"), contenido: document.getElementById("contenido"),
+    marco: () => document.getElementById("marco").clientHeight, activo: () => true });
+</script></body></html>

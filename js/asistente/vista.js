@@ -55,7 +55,7 @@ ESP.asistente.vista = (function () {
     }
 
     // ── Mapa (se crea al primer paso que lo necesita y se conserva) ──────────
-    let cartelera = null, analisis = null;
+    let cartelera = null, paso56 = null;
     let mapa = null, modo = "inicio", ev = estado.datos.evaluacion, restaurando = false;
     const esMovil = () => window.matchMedia("(max-width: 48rem)").matches;
     function asegurarMapa() {
@@ -124,7 +124,7 @@ ESP.asistente.vista = (function () {
       else txt = m.puedeTerminar + " · " + m.puntos.replace("{n}", n);
       if (n >= 3 && !cruz && ev.m2) txt += " · " + ESP.util.area(ev.m2);
       frase.textContent = txt; frase.classList.toggle("as-frase-mala", cruz);
-      const listo = modo === "corrigiendo" ? n >= 3 : n >= 3;
+      const listo = n >= 3;
       const terminar = der.querySelector("[data-terminar]"); if (terminar) terminar.disabled = !listo;
       nota.textContent = listo ? "" : m.faltanPuntos;
     }
@@ -202,76 +202,6 @@ ESP.asistente.vista = (function () {
     }
     function pasoRevisar() { const mp = asegurarMapa(); mp.centrar(); mp.invalidar(); pintarRevision(); }
 
-    // Paso 5: resumen de lo que va a pasar. Cada parte tiene su «cambiar»; el botón grande dispara el análisis.
-    function pasoListo() {
-      const m = ta.listo, d = estado.datos, r = estado.resumen(), u = t.herramienta.estado.unidades;
-      const mp = asegurarMapa(); mp.centrar(false); mp.invalidar();
-      const area = d.evaluacion.m2 ? ESP.util.num(d.evaluacion.m2) + " " + u.m2 + " · " + ESP.util.num(d.evaluacion.varas2) + " " + u.varas2 : "";
-      const fila = (etq, valor, cambiar, accion) => h("div", { class: "as-resumen-f" }, h("div", {}, h("small", {}, etq), valor),
-        boton(m.cambiar, accion, "as-cambiar", { "aria-label": cambiar }));
-      const nombres = r.tarjetas.map(id => h("li", {}, ((t.tarjetas || {})[id] || { nombre: id }).nombre));
-      pantalla.append(h("h2", {}, m.t),
-        fila(m.area, [h("b", {}, area), d.lugar ? h("span", {}, m.lugar.replace("{lugar}", d.lugar)) : ""], m.cambiarArea, () => ir(2)),
-        fila(m.analisis, [h("ul", { class: "as-resumen-l" }, nombres), r.desde ? h("span", {}, m.desde.replace("{fecha}", ESP.util.fecha(r.desde))) : ""], m.cambiarAnalisis, () => ir(4)),
-        h("p", { class: "as-ayuda" }, (r.servicios === 1 ? m.servicio1 : m.serviciosN.replace("{n}", r.servicios)) + ". " + m.tarda.replace("{tiempo}", ESP.asistente.cartelera.tiempoTexto(r.segundos, ta.cartelera))));
-      pintarPie(atras(4), null, boton(m.boton, () => { estado.autorizarAnalisis(); ir(6); }, "btn-p as-principal as-analizar"));
-    }
-
-    // Paso 6: llama a los servicios con llamar/correr de herramienta.js. Atrás, Salir o el Atrás del navegador cancelan las
-    // llamadas (AbortController) y dejan todo intacto en el 5. Al terminar guarda con la misma forma que la herramienta anterior.
-    function cancelarAnalisis() {
-      if (!analisis) return;
-      analisis.activo = false; analisis.controles.cancelado = true;
-      analisis.controles.forEach(c => { try { c.abort(); } catch { /* ya terminó */ } });
-      clearInterval(analisis.rotor); analisis = null;
-    }
-    function pasoAnalizando() {
-      const m = ta.analizando, tp = t.herramienta.progreso, r = estado.resumen(), d = estado.datos;
-      estado.consumirAnalisis();
-      const mp = asegurarMapa(); mp.centrar(false); mp.invalidar();
-      const corrida = analisis = { activo: true, controles: [], rotor: null };
-      const filas = {}; let hechos = 0;
-      const barra = h("div", { class: "as-barra-av", role: "progressbar", "aria-valuemin": "0", "aria-valuemax": String(r.codigos.length), "aria-valuenow": "0", "aria-label": m.t }, h("span", {}));
-      const avance = h("p", { class: "as-avance", role: "status", "aria-live": "polite" }, m.avance.replace("{n}", 0).replace("{m}", r.codigos.length));
-      const lista = h("ul", { class: "as-prog" }, r.codigos.map(c => {
-        filas[c] = h("li", { class: "as-prog-enCola" }, h("span", { class: "as-prog-p", "aria-hidden": "true" }), h("span", { class: "as-prog-n" }, ((t.apis || {})[c] || {}).nombre || c), h("span", { class: "as-prog-e" }, tp.enCola));
-        return filas[c];
-      }));
-      const curioso = h("p", { class: "as-curioso" }, h("b", {}, m.sabia + " "), h("span", {}, m.curiosos[0]));
-      const error = h("p", { class: "as-estado as-estado-invalido", role: "alert", hidden: true }, t.herramienta.errores.todo);
-      let k = 0; corrida.rotor = setInterval(() => { k = (k + 1) % m.curiosos.length; curioso.lastChild.textContent = m.curiosos[k]; }, 8000);
-      pantalla.append(h("h2", {}, m.t), barra, avance, lista, curioso, error);
-      pintarPie(atras(5), [h("p", { class: "as-nota" }, m.atras)], "");
-
-      function alProgreso(codigo, est, seg, motivo) {
-        if (!corrida.activo) return;
-        const li = filas[codigo]; if (!li) return;
-        li.className = "as-prog-" + est;
-        li.querySelector(".as-prog-e").textContent = (est === "corriendo" ? tp.corriendo.replace("{s}", seg) : (tp[est] || est)) + (motivo ? " · " + motivo : "");
-        if (est === "listo" || est === "error" || est === "parcial") {
-          hechos = Object.values(filas).filter(x => /as-prog-(listo|error|parcial)/.test(x.className)).length;
-          barra.setAttribute("aria-valuenow", String(hechos)); barra.firstChild.style.width = Math.round(hechos / r.codigos.length * 100) + "%";
-          avance.textContent = m.avance.replace("{n}", hechos).replace("{m}", r.codigos.length);
-        }
-      }
-      const inicio = new Date(), aoi = d.evaluacion.geojson;
-      const params = c => (c === "PR-05" && r.desde ? { desde: r.desde } : {});
-      ESP.herramienta.correr(r.codigos, aoi, params, alProgreso, corrida.controles).then(resultados => {
-        if (!corrida.activo) return;                         // se canceló: nada que guardar
-        clearInterval(corrida.rotor);
-        const bien = Object.values(resultados).filter(x => x.estado !== "error");
-        if (!bien.length) {                                  // fallaron todos: se queda aquí con el error y puede reintentar
-          error.hidden = false; analisis = null;
-          pintarPie(atras(5), [nota], boton(m.reintentar, () => { estado.autorizarAnalisis(); pintar(6); }, "btn-p as-principal"));
-          return;
-        }
-        const id = ESP.resultados.nuevoId();
-        ESP.resultados.guardar(id, { id, fecha: inicio.toISOString(), aoi, areaM2: d.evaluacion.m2, varas2: d.evaluacion.varas2, ha: d.evaluacion.ha, tarjetas: r.tarjetas, codigos: r.codigos, desde: r.desde, resultados });
-        avance.textContent = m.entrando; analisis = null;
-        reiniciarSesion(); location.hash = "#/informe/" + id + "/0";   // el flujo termina: un nuevo análisis abre un asistente limpio
-      });
-    }
-
     // Paso 4: la cartelera. El pie dice cuántos hay elegidos y cuánto tardará; Siguiente se apaga sin nada elegido, y lo dice.
     function pasoCartelera() {
       const m = ta.cartelera;
@@ -284,16 +214,19 @@ ESP.asistente.vista = (function () {
       pantalla.append(cartelera.el); pintarPieCartelera();
     }
 
+    // Pasos 5 y 6 viven en js/asistente/analisis.js; se arman la primera vez que hacen falta.
+    const pasos56 = () => paso56 || (paso56 = ESP.asistente.analisis.crear({ estado, pantalla, nota, boton, atras, pintarPie, ir, mapa: asegurarMapa, repintar: n => pintar(n), reiniciar: reiniciarSesion }));
+
     // ── Pintar un paso ───────────────────────────────────────────────────────
     function pintar(n) {
       if (cartelera) { cartelera.cerrarFicha(); cartelera = null; }
-      cancelarAnalisis();                                   // salir del paso 6 por cualquier camino cancela las llamadas
+      if (paso56) paso56.cancelar();                        // salir del paso 6 por cualquier camino cancela las llamadas
       const p = estado.ir(n);
       if (String(p) !== String(n) && location.hash !== "#/analizar/" + p) history.replaceState(null, "", "#/analizar/" + p);   // corrige sin dejar rastro en el historial
       el.dataset.paso = p; pantalla.replaceChildren(); frase.textContent = ""; frase.classList.remove("as-frase-mala");
       if (mapa) { mapa.marcarVertice(-1); }
       pintarHitos(p);
-      ({ 0: pasoBienvenida, 1: pasoDonde, 2: pasoMarcar, 3: pasoRevisar, 4: pasoCartelera, 5: pasoListo, 6: pasoAnalizando }[p])();
+      ({ 0: pasoBienvenida, 1: pasoDonde, 2: pasoMarcar, 3: pasoRevisar, 4: pasoCartelera, 5: () => pasos56().listo(), 6: () => pasos56().analizando() }[p])();
       document.title = t.asistente.hitos[estado.hito(p)] ? t.asistente.hitos[estado.hito(p)] + " · " + t.marca.nombre : t.marca.nombre;
       if (p !== 2 && mapa && mapa.dibujando()) mapa.borrar();
       if (mapa) mapa.editable(p === 2 || p === 3);          // en 5 y 6 el polígono queda quieto
@@ -303,7 +236,8 @@ ESP.asistente.vista = (function () {
     return {
       ruta: "analizar", asistente: true,
       irA(n) { pintar(n); },
-      destruir() { cancelarAnalisis(); window.removeEventListener("beforeunload", alCerrar); if (mapa) mapa.destruir(); }
+      mapa: () => mapa,                                   // para las pruebas y para quien necesite centrar o consultar el mapa
+      destruir() { if (paso56) paso56.cancelar(); window.removeEventListener("beforeunload", alCerrar); if (mapa) mapa.destruir(); }
     };
   }
   return { crear, sesion, reiniciarSesion };

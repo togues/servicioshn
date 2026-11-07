@@ -1,0 +1,7 @@
+/* Mapa de dibujo (js/mapa.js). Solo tokens. */
+/* Control «Mi ubicación»: mismo aspecto que el zoom de Leaflet; el aviso sale a su izquierda. */
+.mapa-ubic { position: relative; }
+.mapa-ubic-b { display: grid !important; place-items: center; width: 30px; height: 30px; color: var(--ink) !important; background: var(--surface) !important; }
+.mapa-ubic-b .ms { font-size: 20px; }
+.mapa-ubic-aviso { position: absolute; right: 38px; top: 0; width: 15rem; padding: var(--s2) var(--s3); border-radius: var(--r-sm); background: var(--surface); color: var(--ink); box-shadow: var(--sh); font-size: var(--fs-1); line-height: 1.35; }
+.mapa-ubic-aviso[hidden] { display: none; }

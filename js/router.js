@@ -3,8 +3,8 @@
    #/servicios[?p=filtro]  catálogo
    #/servicio/<id>         ficha de una tarjeta
    #/como-funciona         portada, sección pasos
-   #/analizar[?t=a,b]      herramienta guiada (tarjetas preseleccionadas)
-   #/analizar/<0-6>        asistente de análisis: un paso por pantalla (js/asistente/)
+   #/analizar[/<0-6>][?t=a,b]  asistente de análisis: un paso por pantalla (js/asistente/); sin número abre el primero
+                          que corresponde; t= preselecciona tarjetas
    #/informe/<id>[/<n>]     atlas del resultado (n: 0 portada, 1…N láminas, N+1 contraportada) */
 window.ESP = window.ESP || {};
 ESP.router = {
@@ -21,8 +21,8 @@ ESP.router = {
   pintar() {
     const r = this.leer(), el = document.getElementById("vista"), V = ESP.vistas;
     // El asistente es una sola vista para todos sus pasos: cambiar de paso no reconstruye el mapa
-    const esPaso = r.nombre === "analizar" && /^\d$/.test(r.id);
-    if (esPaso && this.actual && this.actual.asistente) { this.actual.irA(+r.id); return; }
+    const esPaso = r.nombre === "analizar" && (r.id === "" || /^\d$/.test(r.id)), paso = r.id === "" ? NaN : +r.id;
+    if (esPaso && this.actual && this.actual.asistente) { this.actual.irA(paso); return; }
     // Misma vista, mismo resultado: solo cambia de lámina (el atlas no se vuelve a construir)
     if (this.actual && this.actual.ruta === r.nombre && this.actual.id === r.id && this.actual.irA) { this.actual.irA(r.extra, { sinRuta: true }); return; }
     if (this.actual) { const f = this.actual.destruir || this.actual.salir; if (f) { try { f.call(this.actual); } catch { /* nada */ } } }
@@ -34,8 +34,7 @@ ESP.router = {
     try {
       if (r.nombre === "servicios") v = V.servicios(el, r.params.p || "todos");
       else if (r.nombre === "servicio" && r.id) v = V.ficha(el, r.id);
-      else if (esPaso) v = V.asistente(el, +r.id, { tarjetas: (r.params.t || "").split(",").filter(Boolean) });
-      else if (r.nombre === "analizar") v = V.analizar ? V.analizar(el, { tarjetas: (r.params.t || "").split(",").filter(Boolean) }) : V.proximamente(el);
+      else if (esPaso) v = V.asistente(el, paso, { tarjetas: (r.params.t || "").split(",").filter(Boolean) });
       else if (r.nombre === "informe" && r.id) v = V.informe ? V.informe(el, r.id, r.extra) : V.proximamente(el);
       else v = V.portada(el, r.nombre === "como-funciona" ? "como" : null);
     } catch (e) { console.error(e); el.innerHTML = `<section class="bloque"><p class="aviso bad">${ESP.util.esc(e.message)}</p></section>`; }

@@ -239,7 +239,7 @@ ESP.atlas = (function () {
         h("section", {}, h("h3", {}, A().limites), h("ul", { class: "at-limites" }, atlas.limites.map(x => h("li", {}, h("b", {}, x.servicio + ". "), x.texto))),
           atlas.faltantes.length ? h("div", {}, h("h3", {}, A().sinDatoTitulo), h("ul", { class: "at-limites" }, atlas.faltantes.map(x => h("li", {}, h("b", {}, x.servicio + ". "), x.bloques.join(", "))))) : null,
           atlas.errores.length ? h("div", {}, h("h3", {}, A().errores), h("ul", { class: "at-limites" }, atlas.errores.map(x => h("li", {}, h("b", {}, x.servicio + ". "), x.motivo || t().comunes.errorServicio)))) : null)),
-      h("div", { class: "at-contra-acc" }, h("button", { class: "btn btn-p", type: "button", onclick: () => window.print() }, ic("print"), A().pdf), h("a", { class: "btn", href: "#/analizar" }, ic("draw"), A().nuevo), h("a", { class: "btn btn-s", href: "#/informe/" + datos.id + "/0" }, ic("menu_book"), A().volverPortada)),
+      h("div", { class: "at-contra-acc" }, h("button", { class: "btn btn-p", type: "button", onclick: () => window.print() }, ic("print"), A().pdf), h("a", { class: "btn", href: "#/analizar/1", onclick: () => ESP.asistente.vista.reiniciarSesion() }, ic("draw"), A().nuevo), h("a", { class: "btn btn-s", href: "#/informe/" + datos.id + "/0" }, ic("menu_book"), A().volverPortada)),
       h("footer", { class: "at-pie-l" }, h("p", { class: "at-nodice" }, A().pie + " " + tpl(A().generado, { fecha: fechaLarga(new Date().toISOString()) })), h("p", { class: "at-editor" }, h("img", { src: "img/logo.svg", alt: "", width: 18, height: 18 }), A().editor)));
     return pag;
   }
@@ -255,7 +255,7 @@ ESP.atlas = (function () {
     const puntos = h("div", { class: "at-puntos", "aria-hidden": "true" }, Array.from({ length: total + 2 }, (_, i) => h("i", { "data-i": i })));
     const bTema = ESP.tema ? ESP.tema.boton("at-b") : null;
     const bPdf = h("button", { type: "button", class: "at-b", title: A().pdf, "aria-label": A().pdf, onclick: () => window.print() }, ic("print"));
-    const bNuevo = h("a", { class: "at-b", href: "#/analizar", title: A().nuevo, "aria-label": A().nuevo }, ic("draw"));
+    const bNuevo = h("a", { class: "at-b", href: "#/analizar/1", onclick: () => ESP.asistente.vista.reiniciarSesion(), title: A().nuevo, "aria-label": A().nuevo }, ic("draw"));
     b.append(h("div", { class: "at-barra-i" }, bPort, bAnt, pos, bSig), puntos, h("div", { class: "at-barra-d" }, bTema, bPdf, bNuevo));
     b.actualizar = n => {
       const txt = n === 0 ? A().portada : (n > total ? A().contraportada : tpl(A().laminaDe, { n, m: total }));

@@ -1,6 +1,6 @@
 /* Asistente de análisis (#/analizar/0…6). Solo tokens. Una pantalla, una pregunta: barra arriba, la pantalla del paso,
    y abajo «Atrás» a la izquierda y la acción principal a la derecha, siempre. */
-body.en-asistente .cabecera, body.en-asistente .pie, body.en-asistente .guia-lanzador { display: none; }
+body.en-asistente .cabecera, body.en-asistente .pie { display: none; }
 body.en-asistente { overscroll-behavior-y: contain; }
 .as { display: flex; flex-direction: column; height: 100vh; height: 100dvh; background: var(--paper); color: var(--ink); max-width: none; padding: 0; margin: 0; }
 

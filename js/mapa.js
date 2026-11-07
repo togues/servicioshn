@@ -34,10 +34,10 @@ ESP.mapa = (function () {
     const Ctl = L.Control.extend({
       options: { position: "topright" },
       onAdd() {
-        const caja = L.DomUtil.create("div", "leaflet-bar h-ubic");
-        const b = L.DomUtil.create("a", "h-ubic-b", caja); b.href = "#"; b.setAttribute("role", "button");
+        const caja = L.DomUtil.create("div", "leaflet-bar mapa-ubic");
+        const b = L.DomUtil.create("a", "mapa-ubic-b", caja); b.href = "#"; b.setAttribute("role", "button");
         b.title = b.ariaLabel = tm.miUbicacion || "Mi ubicación"; b.innerHTML = '<span class="ms" aria-hidden="true">my_location</span>';
-        aviso = L.DomUtil.create("div", "h-ubic-aviso", caja); aviso.hidden = true; aviso.setAttribute("role", "status");
+        aviso = L.DomUtil.create("div", "mapa-ubic-aviso", caja); aviso.hidden = true; aviso.setAttribute("role", "status");
         L.DomEvent.disableClickPropagation(caja);
         L.DomEvent.on(b, "click", e => { L.DomEvent.preventDefault(e); pedir(false); });
         return caja;

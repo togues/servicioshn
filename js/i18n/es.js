@@ -99,10 +99,7 @@ ESP.i18n.es = {
     "GA-03": { nombre: "Lluvia por mes", pregunta: "" }, "CL-01": { nombre: "Temperatura", pregunta: "" }, "OO-01": { nombre: "Pérdida de bosque", pregunta: "" }, "CB-01": { nombre: "Cobertura año por año", pregunta: "" }
   },
   herramienta: {
-    titulo: "Analizar un área", hoja: "Mostrar u ocultar los pasos",
-    paso1: { t: "Marque el área", d: "Toque en el mapa las esquinas de su área de interés y cierre en el primer punto. También puede buscar un lugar o pegar coordenadas.", dibujar: "Dibujar", borrar: "Borrar", deshacer: "Deshacer el último punto", buscar: "Buscar un lugar o pegar coordenadas" },
     paso2: { t: "¿Qué quiere saber?", d: "Marque una o varias. Un mismo análisis interno se ejecuta una sola vez aunque esté en varias.", desde: "Cambios desde (opcional)", desdeAyuda: "Solo para la vigilancia de cambios: desde qué fecha buscar construcciones o movimientos de tierra. Si se deja vacío, los últimos seis meses." },
-    paso3: { t: "Analizar", d: "Tarda entre medio minuto y tres minutos según lo que elija. Puede seguir el avance de cada parte.", boton: "Analizar ahora", corriendo: "Analizando…", listo: "Ver el resultado" },
     estado: { sinDibujo: "Todavía no hay área marcada.", valido: "Dibujo válido", area: "Área", unidades: { m2: "m²", varas2: "varas²", ha: "ha" },
       invalido: "El dibujo tiene un problema", cruzado: "Dos lados se cruzan: mueva el vértice marcado en rojo.", pocosPuntos: "Faltan esquinas: marque al menos tres.",
       muyChico: "El área mide menos de 50 m²: es menos que un cuarto. Revise el dibujo.", muyGrande: "El área pasa de 500 ha. Pártala en dos o tres polígonos y analice cada uno.", coordenadasFuera: "Esas coordenadas no caen en la región; escriba latitud, longitud (por ejemplo 14.0116, -87.0974).",
@@ -312,17 +309,6 @@ ESP.i18n.es = {
       curiosos: ["Landsat fotografía Honduras desde 1984.", "El radar Sentinel-1 ve a través de las nubes.", "Sentinel-2 pasa por el mismo lugar cada 5 días.", "Los datos de lluvia CHIRPS empiezan en 1981."]
     },
     salir: { confirma: "Si sale ahora se pierde el dibujo.", salir: "Salir", quedarme: "Seguir aquí" }
-  },
-  guia: {
-    abrir: "Visita guiada", atras: "Atrás", continuar: "Continuar", terminar: "Terminar", saltar: "Saltar", pasoDe: "Paso {n} de {m}",
-    herramienta: [
-      { t: "Visita guiada", d: "En cinco pasos le mostramos cómo marcar su área de interés y pedir el análisis. Puede saltarla cuando quiera y volver a verla con el botón de ayuda." },
-      { t: "Aquí se marca el área", d: "Este es el mapa donde se dibuja el área de interés. Acérquese hasta ver el lugar que le interesa, con los botones + y − o con los dedos." },
-      { t: "Encuentre el lugar", d: "Escriba el nombre de un lugar o pegue unas coordenadas, y el mapa lo lleva hasta allí." },
-      { t: "Dibuje el área", d: "Pulse «Dibujar», toque en el mapa las esquinas de su área y cierre tocando el primer punto. «Deshacer» quita el último punto y «Borrar» empieza de nuevo." },
-      { t: "Elija qué quiere saber", d: "Marque una o varias tarjetas. Cada una trae un conjunto de láminas con evidencia satelital. Las que dicen «próximamente» todavía no están disponibles." },
-      { t: "Pida el análisis", d: "Con el área dibujada y al menos una tarjeta marcada, pulse «Analizar ahora». Tarda entre medio minuto y tres minutos; verá el avance de cada parte y, al terminar, se abre el atlas." }
-    ]
   },
   comunes: { cargando: "Cargando…", cerrar: "Cerrar", mas: "Más", menos: "Menos", si: "Sí", no: "No", ok: "Entendido",
     sinBloque: "El servicio no devolvió esta parte", sinDatoServicio: "Sin dato: el servicio no pudo calcular esta parte", errorLectura: "No se pudo leer la respuesta del servicio", errorServicio: "El servicio no respondió" }
