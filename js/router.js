@@ -4,6 +4,7 @@
    #/servicio/<id>         ficha de una tarjeta
    #/como-funciona         portada, sección pasos
    #/analizar[?t=a,b]      herramienta guiada (tarjetas preseleccionadas)
+   #/analizar/<0-6>        asistente de análisis: un paso por pantalla (js/asistente/)
    #/informe/<id>[/<n>]     atlas del resultado (n: 0 portada, 1…N láminas, N+1 contraportada) */
 window.ESP = window.ESP || {};
 ESP.router = {
@@ -19,16 +20,21 @@ ESP.router = {
   ir(h) { location.hash = h; },
   pintar() {
     const r = this.leer(), el = document.getElementById("vista"), V = ESP.vistas;
+    // El asistente es una sola vista para todos sus pasos: cambiar de paso no reconstruye el mapa
+    const esPaso = r.nombre === "analizar" && /^\d$/.test(r.id);
+    if (esPaso && this.actual && this.actual.asistente) { this.actual.irA(+r.id); return; }
     // Misma vista, mismo resultado: solo cambia de lámina (el atlas no se vuelve a construir)
     if (this.actual && this.actual.ruta === r.nombre && this.actual.id === r.id && this.actual.irA) { this.actual.irA(r.extra, { sinRuta: true }); return; }
     if (this.actual) { const f = this.actual.destruir || this.actual.salir; if (f) { try { f.call(this.actual); } catch { /* nada */ } } }
     el.innerHTML = ""; el.className = "vista vista-" + (r.nombre || "portada");
     document.body.classList.toggle("en-herramienta", r.nombre === "analizar" || r.nombre === "informe");
+    document.body.classList.toggle("en-asistente", esPaso);
     document.querySelectorAll(".nav a[data-ruta]").forEach(a => a.toggleAttribute("aria-current", a.dataset.ruta === r.nombre));
     let v = null;
     try {
       if (r.nombre === "servicios") v = V.servicios(el, r.params.p || "todos");
       else if (r.nombre === "servicio" && r.id) v = V.ficha(el, r.id);
+      else if (esPaso) v = V.asistente(el, +r.id, { tarjetas: (r.params.t || "").split(",").filter(Boolean) });
       else if (r.nombre === "analizar") v = V.analizar ? V.analizar(el, { tarjetas: (r.params.t || "").split(",").filter(Boolean) }) : V.proximamente(el);
       else if (r.nombre === "informe" && r.id) v = V.informe ? V.informe(el, r.id, r.extra) : V.proximamente(el);
       else v = V.portada(el, r.nombre === "como-funciona" ? "como" : null);

@@ -33,6 +33,17 @@ ESP.util = {
   traducir(raiz) {
     (raiz || document).querySelectorAll("[data-t]").forEach(el => { const v = this.tx(el.dataset.t); if (typeof v === "string") el.textContent = v; });
   },
+  // Crea un elemento: h("div", {class:"x", onclick: fn}, hijos…). Los textos entran como nodos de texto (nunca como HTML).
+  h(tag, attrs, ...hijos) {
+    const el = document.createElement(tag);
+    for (const k in (attrs || {})) {
+      if (k === "class") el.className = attrs[k];
+      else if (k.startsWith("on")) el.addEventListener(k.slice(2), attrs[k]);
+      else if (attrs[k] != null && attrs[k] !== false) el.setAttribute(k, attrs[k] === true ? "" : attrs[k]);
+    }
+    hijos.flat(Infinity).forEach(x => { if (x == null || x === false) return; el.append(x.nodeType ? x : document.createTextNode(String(x))); });
+    return el;
+  },
   icono(nombre) { return `<span class="ms" aria-hidden="true">${nombre}</span>`; }
 };
 

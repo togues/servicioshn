@@ -269,6 +269,32 @@ ESP.i18n.es = {
     empezar: "Empezar", anteriorCorto: "Anterior", siguienteCorto: "Siguiente", pistaTeclado: "También puede cambiar de lámina con las flechas ← → del teclado.", pistaToque: "También puede deslizar el dedo hacia los lados para cambiar de lámina.",
     tipos: { mapa: "Mapa", grafica: "Gráfica", imagenes: "Imágenes" }
   },
+  asistente: {
+    hitos: { area: "Área", analisis: "Análisis", resultado: "Resultado" }, salirBoton: "Salir", atras: "Atrás", logo: "Espacial HN, inicio",
+    pasoDe: "Paso {n} de 3", enConstruccion: "Este paso se está construyendo. Puede volver atrás sin perder su área.",
+    bienvenida: {
+      etiqueta: "Espacial HN · Inteligencia territorial", titulo: "Lo que los satélites han visto de un lugar, en tres pasos.",
+      texto: "Usted marca un área en el mapa, elige qué quiere saber y recibe un atlas con evidencia de fechas y fuente.",
+      pasos: [{ t: "Marque el área", d: "en el mapa" }, { t: "Elija qué quiere saber", d: "unas tarjetas" }, { t: "Reciba su atlas", d: "con evidencia satelital" }],
+      tarda: "Tarda entre 1 y 3 minutos. No pedimos ni guardamos datos personales.", empezar: "Empezar"
+    },
+    donde: {
+      t: "¿Dónde está su área de interés?", d: "Busque una colonia, un pueblo o pegue coordenadas. También puede moverse por el mapa con el dedo o el ratón.",
+      buscar: "Buscar un lugar o pegar coordenadas", buscarBoton: "Buscar", ubicacion: "Usar mi ubicación", dibujar: "Ya lo veo: dibujar",
+      retomar: "Retomar mi último atlas", retomarDe: "Área de {area} · {fecha}", sinResultado: "No encontré ese lugar. Pruebe con otro nombre o con coordenadas."
+    },
+    marcar: {
+      primera: "Toque la primera esquina del área", siguiente: "Siga con la siguiente esquina", puedeTerminar: "Ya puede terminar: toque el primer punto o pulse Terminar",
+      punto: "1 punto", puntos: "{n} puntos", corregir: "Mueva las esquinas que quiera corregir; cuando esté lista, pulse Terminar",
+      deshacer: "Deshacer punto", reiniciar: "Empezar de nuevo", terminar: "Terminar", faltanPuntos: "Terminar se activa con tres puntos.",
+      confirmaReiniciar: "Se borrará el dibujo actual.", borrar: "Borrar dibujo", conservar: "Conservar"
+    },
+    revisar: {
+      t: "Esta es su área de interés", arrastre: "Puede arrastrar las esquinas para ajustarla.", corregir: "Corregir", confirmar: "Confirmar área",
+      falta: "Corrija el dibujo para continuar: {motivo}", medida: "Medida", sinCobertura: "Algunos datos no cubren esta zona."
+    },
+    salir: { confirma: "Si sale ahora se pierde el dibujo.", salir: "Salir", quedarme: "Seguir aquí" }
+  },
   guia: {
     abrir: "Visita guiada", atras: "Atrás", continuar: "Continuar", terminar: "Terminar", saltar: "Saltar", pasoDe: "Paso {n} de {m}",
     herramienta: [

@@ -44,10 +44,10 @@ ESP.mapa = (function () {
       }
     });
     new Ctl().addTo(map);
-    return { alIniciar(hayDibujo) { pedir(true, hayDibujo); } };
+    return { alIniciar(hayDibujo) { pedir(true, hayDibujo); }, ahora() { pedir(false); } };
   }
 
-  /* opciones: { onCambio(coords), cubierto() → px de abajo tapados por otra pieza } — coords es la lista [lon,lat] sin cerrar, o [] si no hay dibujo. */
+  /* opciones: { onCambio(coords), onTrazo(coords) mientras se dibuja punto a punto, cubierto() → px de abajo tapados por otra pieza } — coords es la lista [lon,lat] sin cerrar, o [] si no hay dibujo. */
   function crear(el, opciones) {
     const op = opciones || {};
     const c = cfg();
@@ -94,15 +94,34 @@ ESP.mapa = (function () {
       poligono.pm.enable({ allowSelfIntersection: true });
       avisar();
     });
-    map.on("pm:drawstart", () => { if (poligono) { poligono.remove(); poligono = null; avisar(); } });
+    // Puntos ya puestos mientras se dibuja (el polígono aún no existe): para guiar a cada toque y mostrar el área en curso.
+    const enCurso = () => {
+      const capa = map.pm && map.pm.Draw && map.pm.Draw.Polygon && map.pm.Draw.Polygon._layer;
+      if (!capa) return [];
+      const ll = capa.getLatLngs(); const fila = Array.isArray(ll[0]) ? ll[0] : ll;
+      return fila.map(p => [p.lng, p.lat]);
+    };
+    const avisarTrazo = () => { if (op.onTrazo) op.onTrazo(api.dibujando() ? enCurso() : []); };
+    map.on("pm:drawstart", e => {
+      if (poligono) { poligono.remove(); poligono = null; avisar(); }
+      if (e.workingLayer) e.workingLayer.on("pm:vertexadded", avisarTrazo);
+      avisarTrazo();
+    });
+    map.on("pm:drawend", () => setTimeout(avisarTrazo, 0));
 
     const api = {
       map,
-      dibujar() { if (map.pm) map.pm.enableDraw("Polygon", { finishOn: "click", continueDrawing: false }); },
+      // extra: opciones de Geoman. El asistente pasa { finishOn: null }: un toque dentro de la figura en curso no debe cerrarla; se cierra en el primer punto o con «Terminar».
+      dibujar(extra) { if (map.pm) map.pm.enableDraw("Polygon", { finishOn: "click", continueDrawing: false, ...(extra || {}) }); },
+      // Cierra el polígono en curso (el botón «Terminar»); sin tres puntos Geoman no lo cierra.
+      terminar() { if (this.dibujando() && map.pm.Draw.Polygon._finishShape) map.pm.Draw.Polygon._finishShape(); },
+      trazo: enCurso,
+      tienePoligono() { return !!poligono; },
+      ubicar() { ubic.ahora(); },
       dibujando() { return !!(map.pm && map.pm.globalDrawModeEnabled && map.pm.globalDrawModeEnabled()); },
       deshacer() {
         // Mientras se dibuja, Geoman quita el último vértice; si ya está cerrado, se quita el último punto del polígono.
-        if (this.dibujando() && map.pm.Draw && map.pm.Draw.Polygon && map.pm.Draw.Polygon._removeLastVertex) { map.pm.Draw.Polygon._removeLastVertex(); return; }
+        if (this.dibujando() && map.pm.Draw && map.pm.Draw.Polygon && map.pm.Draw.Polygon._removeLastVertex) { map.pm.Draw.Polygon._removeLastVertex(); avisarTrazo(); return; }
         if (!poligono) return;
         const a = leer();
         if (a.length <= 3) { this.borrar(); return; }
@@ -123,7 +142,7 @@ ESP.mapa = (function () {
         this.centrar();
       },
       coordenadas() { return coords.slice(); },
-      centrar() { if (poligono) map.fitBounds(poligono.getBounds(), { padding: [40, 40] }); },
+      centrar() { if (poligono) map.fitBounds(poligono.getBounds(), { paddingTopLeft: [40, 40], paddingBottomRight: [40, 40 + (op.cubierto ? op.cubierto() : 0)] }); },   // lo que tapa la hoja o el panel de abajo no cuenta como mapa visible
       marcarVertice(i) {
         if (culpable) { culpable.remove(); culpable = null; }
         if (i < 0 || !coords[i]) return;
