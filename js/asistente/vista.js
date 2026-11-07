@@ -27,7 +27,7 @@ ESP.asistente.vista = (function () {
       ["area", "analisis", "resultado"].map(k => h("li", { "data-hito": k }, h("span", { class: "as-hito-n" }), ta.hitos[k])));
     const barra = h("header", { class: "as-barra" },
       h("a", { class: "as-logo", href: "#/", "aria-label": ta.logo, onclick: ev => { ev.preventDefault(); salir(); } },
-        h("img", { src: "img/logo.svg", alt: "", width: 28, height: 28 }), h("b", {}, t.marca.nombre)),
+        ESP.util.logo(120), ESP.util.marca(32)),
       hitosEl,
       h("button", { class: "btn as-salir", type: "button", onclick: () => salir() }, ta.salirBoton));
     const mapaEl = h("div", { class: "as-mapa", id: "as-mapa" });
@@ -137,7 +137,7 @@ ESP.asistente.vista = (function () {
       if (url) for (let y = 7542; y <= 7544; y++) for (let x = 4228; x <= 4231; x++)
         fondo.append(h("img", { src: url.replace("{z}", 14).replace("{y}", y).replace("{x}", x), alt: "", loading: "lazy", decoding: "async" }));
       pantalla.append(fondo, h("div", { class: "as-bv" },
-        h("p", { class: "as-bv-et" }, b.etiqueta), h("h1", {}, b.titulo), h("p", { class: "as-bv-tx" }, b.texto),
+        h("img", { class: "as-bv-logo", src: "img/logo-oscuro.png", alt: t.marca.nombre, width: 180, height: 85 }), h("p", { class: "as-bv-et" }, b.etiqueta), h("h1", {}, b.titulo), h("p", { class: "as-bv-tx" }, b.texto),
         h("ol", { class: "as-bv-pasos" }, b.pasos.map((p, i) => h("li", {}, h("b", {}, String(i + 1)), h("span", {}, h("strong", {}, p.t), p.d)))),
         h("p", { class: "as-bv-tarda" }, b.tarda),
         boton(b.empezar, () => { guardado.poner(); estado.marcarBienvenida(); ir(1); }, "btn-p btn-g as-empezar")));

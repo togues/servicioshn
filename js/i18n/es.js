@@ -270,7 +270,7 @@ ESP.i18n.es = {
     hitos: { area: "Área", analisis: "Análisis", resultado: "Resultado" }, salirBoton: "Salir", atras: "Atrás", logo: "Espacial HN, inicio",
     pasoDe: "Paso {n} de 3",
     bienvenida: {
-      etiqueta: "Espacial HN · Inteligencia territorial", titulo: "Lo que los satélites han visto de un lugar, en tres pasos.",
+      etiqueta: "Inteligencia territorial", titulo: "Lo que los satélites han visto de un lugar, en tres pasos.",
       texto: "Usted marca un área en el mapa, elige qué quiere saber y recibe un atlas con evidencia de fechas y fuente.",
       pasos: [{ t: "Marque el área", d: "en el mapa" }, { t: "Elija qué quiere saber", d: "unas tarjetas" }, { t: "Reciba su atlas", d: "con evidencia satelital" }],
       tarda: "Tarda entre 1 y 3 minutos. No pedimos ni guardamos datos personales.", empezar: "Empezar"

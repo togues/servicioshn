@@ -44,6 +44,10 @@ ESP.util = {
     hijos.flat(Infinity).forEach(x => { if (x == null || x === false) return; el.append(x.nodeType ? x : document.createTextNode(String(x))); });
     return el;
   },
+  // Logo completo en sus dos versiones (la de tema claro y la de oscuro; el CSS muestra la que toca). ancho en px, mínimo 120.
+  logo(ancho) { const w = Math.max(120, ancho || 120), a = Math.round(w * 291 / 620); return [["logo-c", "img/logo.png"], ["logo-o", "img/logo-oscuro.png"]].map(([c, src]) => this.h("img", { class: "logo " + c, src, alt: "", width: w, height: a })); },
+  // Solo el prisma, para espacios chicos (barras en celular, pies, favicon).
+  marca(px) { return this.h("img", { class: "marca-img", src: "img/marca.png", alt: "", width: px, height: px }); },
   icono(nombre) { return `<span class="ms" aria-hidden="true">${nombre}</span>`; }
 };
 

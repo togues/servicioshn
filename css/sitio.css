@@ -1,9 +1,13 @@
 /* Sitio: cabecera, portada, catálogo, ficha, pie. Layout por secciones de ancho fijo (--ancho) con gutter. */
 .cabecera { position: sticky; top: 0; z-index: 700; height: var(--cabecera-alto); display: flex; align-items: center; gap: var(--s4); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); background: var(--surface); border-bottom: 1px solid var(--line); }
 .marca { display: flex; align-items: center; gap: var(--s3); text-decoration: none; color: var(--ink); min-width: 0; }
-.marca img { flex: none; width: 36px; height: 36px; }
-.marca span { display: flex; flex-direction: column; line-height: 1.15; min-width: 0; }
-.marca b { font-size: var(--fs-3); font-weight: 700; color: var(--brand); }
+/* Logo: dos archivos con fondo transparente, uno para tema claro y otro para oscuro (el logotipo cambia de negro a claro). Ancho mínimo de la marca: 120 px. */
+.logo { flex: none; display: block; height: auto; }
+.logo-o { display: none; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .logo-c { display: none; } :root:not([data-theme="light"]) .logo-o { display: block; } }
+:root[data-theme="dark"] .logo-c { display: none; }
+:root[data-theme="dark"] .logo-o { display: block; }
+.marca .logo { width: 120px; }
 .marca small { font-size: var(--fs-0); color: var(--ink-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .nav { margin-left: auto; display: flex; align-items: center; gap: var(--s4); }
 .nav a { color: var(--ink); text-decoration: none; font-weight: 600; font-size: var(--fs-1); padding: 6px 2px; border-bottom: 2px solid transparent; }

@@ -108,7 +108,7 @@ ESP.atlas = (function () {
   }
   const pieLamina = l => h("footer", { class: "at-pie-l" },
     l.limites ? h("p", { class: "at-nodice" }, h("b", {}, A().noDice + ". "), l.limites) : h("p", { class: "at-nodice" }, A().pie),
-    h("p", { class: "at-editor" }, h("img", { src: "img/logo.svg", alt: "", width: 18, height: 18 }), A().editor));
+    h("p", { class: "at-editor" }, ESP.util.marca(18), A().editor));
   const cabLamina = (l, total, T, ayuda) => h("header", { class: "at-cab-l" },
     h("div", { class: "at-num" }, h("span", {}, tpl(A().laminaDe, { n: l.n, m: total }))),
     h("div", { class: "at-tit" }, h("h2", {}, l.titulo), h("p", { class: "at-sub" }, [l.tarjeta && T.tarjetas[l.tarjeta] ? T.tarjetas[l.tarjeta].nombre : null, l.servicio].filter(Boolean).join(" · "))),
@@ -221,7 +221,7 @@ ESP.atlas = (function () {
           h("section", { class: "at-esencial-s" }, h("h2", {}, A().esencial), esencial),
           h("section", { class: "at-como" }, h("h3", {}, A().comoLeer), h("ul", {}, A().comoLeerTexto.map(x => h("li", {}, x)))))),
       h("section", { class: "at-indice-s" }, h("h2", {}, A().indice), indice),
-      h("footer", { class: "at-pie-l" }, h("p", { class: "at-nodice" }, A().pie), h("p", { class: "at-editor" }, h("img", { src: "img/logo.svg", alt: "", width: 18, height: 18 }), A().editor)));
+      h("footer", { class: "at-pie-l" }, h("p", { class: "at-nodice" }, A().pie), h("p", { class: "at-editor" }, ESP.util.marca(18), A().editor)));
     const m = mapaBase(mEl, datos.aoi, { calles: true, fijo: true, padding: [60, 60], maxZoom: 13 });
     // Situación: el área en su entorno, no a tope
     m.encuadrar = () => { try { const b = m.contorno.getBounds(); m.map.setView(b.getCenter(), Math.min(13, m.map.getBoundsZoom(b.pad(1)) - 3)); } catch { /* nada */ } }; m.encuadrar();
@@ -240,7 +240,7 @@ ESP.atlas = (function () {
           atlas.faltantes.length ? h("div", {}, h("h3", {}, A().sinDatoTitulo), h("ul", { class: "at-limites" }, atlas.faltantes.map(x => h("li", {}, h("b", {}, x.servicio + ". "), x.bloques.join(", "))))) : null,
           atlas.errores.length ? h("div", {}, h("h3", {}, A().errores), h("ul", { class: "at-limites" }, atlas.errores.map(x => h("li", {}, h("b", {}, x.servicio + ". "), x.motivo || t().comunes.errorServicio)))) : null)),
       h("div", { class: "at-contra-acc" }, h("button", { class: "btn btn-p", type: "button", onclick: () => window.print() }, ic("print"), A().pdf), h("a", { class: "btn", href: "#/analizar/1", onclick: () => ESP.asistente.vista.reiniciarSesion() }, ic("draw"), A().nuevo), h("a", { class: "btn btn-s", href: "#/informe/" + datos.id + "/0" }, ic("menu_book"), A().volverPortada)),
-      h("footer", { class: "at-pie-l" }, h("p", { class: "at-nodice" }, A().pie + " " + tpl(A().generado, { fecha: fechaLarga(new Date().toISOString()) })), h("p", { class: "at-editor" }, h("img", { src: "img/logo.svg", alt: "", width: 18, height: 18 }), A().editor)));
+      h("footer", { class: "at-pie-l" }, h("p", { class: "at-nodice" }, A().pie + " " + tpl(A().generado, { fecha: fechaLarga(new Date().toISOString()) })), h("p", { class: "at-editor" }, ESP.util.marca(18), A().editor)));
     return pag;
   }
 
